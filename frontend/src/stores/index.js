@@ -129,8 +129,16 @@ export const useView = defineStore({
   state: () => ({
     user_settings: false,
     use_custom_link: false,
+    copy: false,
   }),
   actions: {
+    copyURL(text) {
+      navigator.clipboard.writeText(text);
+      this.copy = true;
+      setTimeout(() => {
+        this.copy = false;
+      }, 2000);
+    },
     useCustomLink() {
       this.use_custom_link = !this.use_custom_link;
     },

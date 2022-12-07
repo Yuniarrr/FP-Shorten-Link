@@ -49,9 +49,9 @@
             <p class="font-thin underline cursor-pointer">View All Links</p>
           </div>
           <Icon
-            class="p-2.5 bg-green-900 rounded-md place-self-end"
+            class="p-2.5 bg-blue-900 rounded-md place-self-end"
             icon="mdi:user"
-            color="#31c48d"
+            color="#299CDB"
             width="40"
           />
         </div>
@@ -71,9 +71,9 @@
             <p class="font-thin underline cursor-pointer">View All Links</p>
           </div>
           <Icon
-            class="p-2.5 bg-green-900 rounded-md place-self-end"
+            class="p-2.5 bg-amber-900 opacity-80 rounded-md place-self-end"
             icon="bi:calendar-day"
-            color="#31c48d"
+            color="#F7B84B"
             width="40"
           />
         </div>
@@ -93,9 +93,9 @@
             <p class="font-thin underline cursor-pointer">View All Links</p>
           </div>
           <Icon
-            class="p-2.5 bg-green-900 rounded-md place-self-end"
+            class="p-2.5 bg-zinc-900 opacity-95 rounded-md place-self-end"
             icon="bi:calendar-month"
-            color="#31c48d"
+            color="#5167AD"
             width="40"
           />
         </div>
@@ -119,13 +119,28 @@
           <p class="text-lg my-2 ml-5 font-bold text-neutral-50">Top Visited Links</p>
         </div>
         <div class="flex flex-col mx-5 my-3 gap-y-2">
-          <p class="font-light text-xl">1. http</p>
-          <p class="font-light text-xl">2. http</p>
+          <div class="flex lg:flex-row xl:flex-row md:flex-col">
+            <p class="font-light text-xl">1. s.it/B3uz4</p>
+            <Icon
+              v-if="view.copy == false"
+              icon="carbon:copy"
+              width="20"
+              class="cursor-pointer hover:text-yellow-200 lg:ml-2 md:ml-4 md:mt-2"
+              @click="view.copyURL(`s.it/B3uz4`)"
+            ></Icon>
+            <Icon
+              v-if="view.copy == true"
+              icon="material-symbols:check-small-rounded"
+              color="green"
+              class="cursor-pointer lg:ml-2 md:ml-4 md:mt-2"
+              width="33"
+            />
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="grid w-full grid-cols-2">
+    <!-- <div class="grid w-full grid-cols-2">
       <div class="grid w-full grid-cols-2 grid-rows-4 gap-6 mt-7">
         <div class="px-5 pt-3 pb-5 mr-3 rounded-lg bg-neutral-800 w-60">
           <h1 class="text-xl font-normal">Total Links</h1>
@@ -146,7 +161,7 @@
           class="w-full h-full p-3 rounded-lg bg-neutral-800"
         />
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 <script>
@@ -162,6 +177,7 @@ import {
   CategoryScale,
 } from "chart.js";
 import { Icon } from "@iconify/vue";
+import { useView } from "../../stores/index.js";
 
 ChartJS.register(
   Title,
@@ -210,6 +226,12 @@ export default {
           },
         ],
       },
+    };
+  },
+  setup() {
+    const view = useView();
+    return {
+      view,
     };
   },
   components: {
