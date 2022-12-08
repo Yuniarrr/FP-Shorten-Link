@@ -37,7 +37,7 @@ app.post('/api/login', (req, res) => {
                 return res.send({
                     code: 200,
                     message: "Login successfull",
-                    data: {
+                    result: {
                         session: sessionCookie,
                         options
                     }
@@ -83,7 +83,7 @@ app.post('/api/register', (req, res) => {
             res.send({
                 code: 200,
                 message: "User registerered successfully",
-                data: {
+                result: {
                     userRecord
                 }
             })
@@ -113,7 +113,7 @@ app.post('/api/signout', middleware.decodeToken, (req, res) => {
         return res.send({
             code: 200,
             message: 'User record fetched successfully',
-            data: {
+            result: {
                 userRecord
             }
         })
@@ -147,7 +147,7 @@ app.post('/api/links', (req, res) => {
                 return res.send({
                     code: 200,
                     message: 'Link fetched successfully',
-                    data: {
+                    result: {
                         url: doc.data().url,
                         path: doc.data().path,
                     }
@@ -177,7 +177,7 @@ app.put('/api/links', middleware.decodeToken, middleware.reqURLValidation, middl
             return res.send({
                 code: 200,
                 message: 'Link created successfully',
-                data: {
+                result: {
                     id: docRef.id,
                     user_id: req.user.user_id,
                     url: req.url,
@@ -212,7 +212,7 @@ app.patch('/api/links', middleware.decodeToken, middleware.reqURLValidation, mid
             return res.send({
                 code: 200,
                 message: 'Link updated successfully',
-                data: {
+                result: {
                     id: req.body.id,
                     user_id: req.user.user_id,
                     url: req.url,

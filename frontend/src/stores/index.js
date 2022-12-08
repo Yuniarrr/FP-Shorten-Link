@@ -21,31 +21,18 @@ export const useApp = defineStore({
       this.loading = true;
       this.error = null;
       try {
-        const { data } = await axios
-          .post(URL_API + "login", {
+        const data = await axios.post(URL_API + "api/login", {
             email,
             password,
           })
           .then((res) => {
-            console.log(res);
-            document.cookie = `token=${
-              res.data.token
-            }; path=/; expires=${new Date(
-              res.data.expirationTime
-            ).toUTCString()}`;
-            document.cookie = `refreshToken=${
-              res.data.refreshToken
-            }; path=/; expires=${new Date(
-              res.data.expirationTime
-            ).toUTCString()}`;
+            document.cookie = `session=${res.data.result.session}; max-age=${res.data.result.options.maxAge}; httpOnly=${res.data.result.options.httpOnly}; secure=${res.data.result.options.secure}`;
           })
           .catch((err) => {
             console.log(err);
           });
-        this.user = data.user;
-        this.token = data.token;
-        this.refreshToken = data.refreshToken;
       } catch (error) {
+        console.log(error);
         this.error = error;
       } finally {
         this.router.push("/dashboard");
@@ -58,22 +45,13 @@ export const useApp = defineStore({
       console.log("register");
       try {
         const { data } = await axios
-          .post(URL_API + "register", {
+          .post(URL_API + "api/register", {
             email,
             password,
             cpassword,
           })
           .then((res) => {
-            document.cookie = `token=${
-              res.data.token
-            }; path=/; expires=${new Date(
-              res.data.expirationTime
-            ).toUTCString()}`;
-            document.cookie = `refreshToken=${
-              res.data.refreshToken
-            }; path=/; expires=${new Date(
-              res.data.expirationTime
-            ).toUTCString()}`;
+            console.log(res);
           })
           .catch((error) => {
             // Todo: Handle error
@@ -92,7 +70,7 @@ export const useApp = defineStore({
       } finally {
         this.loading = false;
       }
-      this.router.push("/dashboard");
+      this.router.push("/login");
     },
     async logout() {
       this.user = null;
@@ -101,20 +79,14 @@ export const useApp = defineStore({
     },
     async sessionCheck() {
       // Todo: Check if token is valid
-      const token = document.cookie
+      const session = document.cookie
         .split("; ")
-        .find((row) => row.startsWith("token="))
+        .find((row) => row.startsWith("session="))
         ?.split("=")[1];
 
-      const refreshToken = document.cookie
-        .split("; ")
-        .find((row) => row.startsWith("refreshToken="))
-        ?.split("=")[1];
+      console.log("session : " + session);
 
-      console.log("token : " + token);
-      console.log("refreshToken : " + refreshToken);
-
-      if (token && refreshToken) {
+      if (session) {
         this.user.logged_in = true;
         console.log("logged_in : " + this.user.logged_in);
         return true;
