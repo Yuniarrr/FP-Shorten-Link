@@ -130,6 +130,9 @@ export const useView = defineStore({
     user_settings: false,
     use_custom_link: false,
     copy: false,
+    links: {
+      edit: false,
+    }
   }),
   actions: {
     copyURL(text) {
@@ -138,6 +141,9 @@ export const useView = defineStore({
       setTimeout(() => {
         this.copy = false;
       }, 2000);
+    },
+    showEditModal() {
+      this.links.edit = !this.links.edit;
     },
     useCustomLink() {
       this.use_custom_link = !this.use_custom_link;
@@ -154,29 +160,6 @@ export const useView = defineStore({
       }).then((result) => {
         if (result.isConfirmed) {
           Swal.fire("Deleted!", "Your file has been deleted.", "success");
-        }
-      });
-    },
-    editLink() {
-      Swal.fire({
-        title: "Edit Link",
-        input: "text",
-        inputValue: "https://example.com",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        inputValidator: (value) => {
-          if (!value) {
-            return "You need to write something!";
-          }
-        },
-      }).then((result) => {
-        if (result.isConfirmed) {
-          Swal.fire(
-            "Changed Successfully",
-            "Your file has been changed.",
-            "success"
-          );
         }
       });
     },
