@@ -1,9 +1,11 @@
 <template>
-  <div class="w-full h-screen bg-black flex text-neutral-50">
-    <!-- Sidebar -->
-    <Sidebar />
-    <RouterView />
-    <!-- <EditMsg /> -->
+  <div>
+    <!-- <EditMsg class="absolute top-1/2 left-1/2" /> -->
+    <div class="flex w-full h-screen bg-black text-neutral-50">
+      <!-- Sidebar -->
+      <Sidebar />
+      <RouterView />
+    </div>
   </div>
 </template>
 
