@@ -26,7 +26,7 @@ export const useApp = defineStore({
             password,
           })
           .then((res) => {
-            document.cookie = `session=${res.data.result.session}; max-age=${res.data.result.options.maxAge}; httpOnly=${res.data.result.options.httpOnly}; secure=${res.data.result.options.secure}`;
+            document.cookie = `session=${res.data.result.session}; max-age=${res.data.result.options.maxAge};`;
           })
           .catch((err) => {
             console.log(err);
