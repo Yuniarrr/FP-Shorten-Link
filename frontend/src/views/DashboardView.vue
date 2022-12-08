@@ -3,6 +3,7 @@
     <!-- Sidebar -->
     <Sidebar />
     <RouterView />
+    <!-- <EditMsg /> -->
   </div>
 </template>
 
@@ -13,6 +14,7 @@ import AddToggle from "../components/AddToggle.vue";
 import Sidebar from "../components/dashboard/Sidebar.vue";
 // import NavDashboard from "../components/NavDashboard.vue";
 import HomeDashboard from "../components/dashboard/Home.vue";
+import EditMsg from "../components/EditMsg.vue";
 
 export default {
   setup() {
@@ -33,6 +35,7 @@ export default {
     AddToggle,
     Sidebar,
     HomeDashboard,
+    EditMsg,
   },
 };
 </script>
