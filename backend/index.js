@@ -1,9 +1,10 @@
 import { auth, db } from './config/firebase.config.js';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
-import { collection, addDoc } from "firebase/firestore";
+import admin from './config/firebase-service-account.config.js';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import { middleware } from './middleware/index.js';
 import helper from './utils/helper.util.js';
@@ -13,6 +14,7 @@ const port = 3000;
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use(cookieParser());
 app.use(morgan('tiny'));
 
 app.get('/api', (req, res) => {
@@ -26,15 +28,21 @@ app.post('/api/login', (req, res) => {
         signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
             const user = userCredential.user;
-            return res.send({
-                code: 200,
-                message: "Login successfull",
-                data: {
-                    token: user.accessToken,
-                    refreshToken: user.refreshToken,
-                    expirationTime: user.expirationTime,
-                }
-            });
+            return user
+        })
+        .then((user) => {
+            admin.auth().createSessionCookie(user.accessToken, { expiresIn: 60 * 60 * 24 * 5 * 1000 })
+            .then((sessionCookie) => {
+                const options = { maxAge: 60 * 60 * 24 * 5 * 1000, httpOnly: true, secure: true };
+                return res.send({
+                    code: 200,
+                    message: "Login successfull",
+                    data: {
+                        session: sessionCookie,
+                        options
+                    }
+                })
+            })
         })
         .catch((error) => {
             return res.status(400).send({
@@ -64,15 +72,19 @@ app.post('/api/register', (req, res) => {
     }
 
     try {
-        createUserWithEmailAndPassword(auth, email, password).then((userCredential) => {
-            const user = userCredential.user;
+        admin.auth().createUser({
+            email: email,
+            emailVerified: false,
+            password: password,
+            displayName: 'User',
+            disabled: false
+        })
+        .then((userRecord) => {
             res.send({
                 code: 200,
                 message: "User registerered successfully",
                 data: {
-                    token: user.accessToken,
-                    expirationTime: user.expirationTime,
-                    refreshToken: user.refreshToken
+                    userRecord
                 }
             })
         })
@@ -92,7 +104,67 @@ app.post('/api/register', (req, res) => {
     }
 });
 
-app.post('/api/links', middleware.decodeToken, middleware.reqURLValidation, middleware.reqPathValidation, (req, res) => {
+app.post('/api/signout', middleware.decodeToken, (req, res) => {
+    admin.auth().revokeRefreshTokens(req.user.sub)
+    .then(() => {
+        return admin.auth().getUser(req.user.user_id)
+    })
+    .then((userRecord) => {
+        return res.send({
+            code: 200,
+            message: 'User record fetched successfully',
+            data: {
+                userRecord
+            }
+        })
+    })
+    .catch((error) => {
+        return res.status(500).send({
+            code: 500,
+            message: 'Internal Server Error',
+            error
+        })
+    });
+})
+
+app.post('/api/links', (req, res) => {
+    try {
+        db.collection('links').where('path', '==', req.body.path).get()
+        .then((querySnapshot) => {
+            if(querySnapshot.empty) {
+                return res.status(404).send({
+                    code: 404,
+                    message: 'Link not found',
+                })
+            }
+            querySnapshot.forEach((doc) => {
+                db.collection('logs').add({
+                    link_id: doc.id,
+                    ip: req.ip,
+                    user_agent: req.headers['user-agent'],
+                    timestamp: + new Date(),
+                });
+                return res.send({
+                    code: 200,
+                    message: 'Link fetched successfully',
+                    data: {
+                        url: doc.data().url,
+                        path: doc.data().path,
+                    }
+                });
+            });
+        });
+    } catch (error) {
+        return res.status(500).send({
+            code: 500,
+            message: 'Internal Server Error',
+            error
+        })
+    }
+});
+
+
+app.put('/api/links', middleware.decodeToken, middleware.reqURLValidation, middleware.reqPathValidation, (req, res) => {
     try {
         db.collection('links').add({
             user_id: req.user.user_id,
