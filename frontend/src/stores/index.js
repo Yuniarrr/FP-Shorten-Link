@@ -2,6 +2,12 @@ import { ref, computed } from "vue";
 import { defineStore } from "pinia";
 import Swal from "sweetalert2";
 import axios from "axios";
+import {
+  getFirestore,
+  collection,
+  onSnapshot,
+} from "firebase/firestore";
+import { db } from '../config/firebase.config.js';
 
 const URL_API = "http://localhost:3000/";
 
@@ -15,6 +21,13 @@ export const useApp = defineStore({
     refreshToken: null,
     loading: false,
     error: null,
+    links: {
+      link: "",
+      custom_link: "",
+      success: false,
+      path: "",
+      all_links: [],
+    }
   }),
   actions: {
     async login(email, password) {
@@ -112,21 +125,47 @@ export const useApp = defineStore({
       });
     },
     async newLink(url, custom) {
-      console.log(document.cookie);
+      // console.log(document.cookie);
+      let use_custom = custom ? custom : null;
       axios.put(URL_API + "api/links", {
         url: url,
+        use_custom
       }, {
         headers: {
           "Authorization": "Bearer " + document.cookie.split("; ").find((row) => row.startsWith("session=")).split("=")[1]
         }
       })
       .then((res) => {
-        console.log(res);
+        console.log(`res ${res.data.result.path}`);
+        if(res.data.result.path) {
+          this.links.success = true;
+          this.links.path = "s.it/" + res.data.result.path;
+        }
       })
       .catch((err) => {
         console.log(err);
       });
-    }
+      this.links.link = "";
+      this.links.custom_link = "";
+    },
+    async getLinks() {
+      let parsedCookie = this.parseJwt(document.cookie);
+      let user_id = parsedCookie.user_id;
+      db.collection("links").onSnapshot((querySnapshot) => {
+        let links = [];
+        querySnapshot.forEach((doc) => {
+          if(doc.data().user_id === user_id) {
+            links.push({ ...doc.data(), id: doc.id });
+          }
+        });
+        this.links.all_links = links;
+      })
+    },
+    parseJwt (token) {
+      let base64Url = token.split('.')[1];
+      let base64 = base64Url.replace('-', '+').replace('_', '/');
+      return JSON.parse(window.atob(base64));
+    },
   },
 });
 
