@@ -126,12 +126,10 @@ export const useApp = defineStore({
         console.log(err);
       });
     },
-    async newLink(url, custom) {
-      // console.log(document.cookie);
-      let use_custom = custom ? custom : null;
+    async newLink(url, custom, use_custom) {
       axios.put(URL_API + "api/links", {
         url: url,
-        // use_custom
+        path: use_custom ? custom : ""
       }, {
         headers: {
           "Authorization": "Bearer " + document.cookie.split("; ").find((row) => row.startsWith("session=")).split("=")[1]

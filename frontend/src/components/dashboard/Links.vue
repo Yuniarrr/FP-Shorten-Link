@@ -16,7 +16,7 @@
               autofocus
               v-model="app.links.link"
             />
-            <button @click="use_custom ? app.newLink(app.links.link, app.links.custom_link) : app.newLink(app.links.link)"
+            <button @click="use_custom ? app.newLink(app.links.link, app.links.custom_link, use_custom) : app.newLink(app.links.link)"
               type="submit"
               class="w-24 p-3 font-bold bg-green-400 rounded-r-lg hover:bg-green-500"
             >
