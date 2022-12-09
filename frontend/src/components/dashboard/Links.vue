@@ -75,7 +75,7 @@
               </div>
               <div
                 class="bg-neutral-700 px-1.5 py-1 rounded-md ml-3 absolute right-0 flex justify-center items-center space-x-1 cursor-pointer hover:bg-neutral-600"
-                @click="app.deleteLink(link.id)"
+                @click="(app.links.delete = true), id = link.id"
               >
                 <h1 class="text-sm font-semibold">Delete</h1>
                 <Icon

@@ -28,6 +28,7 @@ export const useApp = defineStore({
       path: "",
       all_links: [],
       edit: false,
+      delete: false
     }
   }),
   actions: {
@@ -164,6 +165,7 @@ export const useApp = defineStore({
       })
     },
     async deleteLink(id) {
+      console.log(id);
       axios.delete(URL_API + "api/links", {
         headers: {
           "Authorization": "Bearer " + document.cookie.split("; ").find((row) => row.startsWith("session=")).split("=")[1]
