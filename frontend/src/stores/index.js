@@ -180,16 +180,29 @@ export const useApp = defineStore({
       });
       this.getLinks();
     },
-    parseJwt (token) {
+    async editLink(id) {
+      axios.patch(URL_API + "api/links", {
+        id,
+        url: this.links.all_links.find((link) => link.id === id).url,
+        path: this.links.all_links.find((link) => link.id === id).path
+      }, {
+        headers: {
+          "Authorization": "Bearer " + document.cookie.split("; ").find((row) => row.startsWith("session=")).split("=")[1]
+        }
+      })
+      .then((res) => {
+        console.log("successfull edited");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+      this.getLinks();
+    },
+    parseJwt(token) {
       let base64Url = token.split('.')[1];
       let base64 = base64Url.replace('-', '+').replace('_', '/');
       return JSON.parse(window.atob(base64));
     },
-    delete(id) {
-      db.collection("links").doc(id).delete();
-      this.getLinks();
-      console.log("deleted");
-    }
   },
 });
 
