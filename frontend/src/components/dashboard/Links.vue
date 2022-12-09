@@ -1,24 +1,6 @@
 <template>
   <div class="w-full ml-24 mr-5 mb-9">
-    <div class="fixed z-10 flex items-center justify-center w-full mr-5 h-modal" :class="{'hidden': app.links.success == false}">
-      <div class="z-20 flex items-center justify-center w-full mr-5 bg-black opacity-60 my-7 h-modal" @click="app.links.success = false, app.links.path = ``">
-      </div>
-      <div class="fixed z-50 flex flex-col items-center justify-center w-1/3 py-5 -mt-4 -ml-8 rounded-lg opacity-100 pb-11 bg-neutral-800 gap-y-1 md:px-2">
-        <Icon icon="material-symbols:close-rounded" class="self-end mr-6 cursor-pointer hover:text-yellow-200" width="25" @click="app.links.success = false, app.links.path = ``" />
-        <p class="text-2xl">Link created successfully !!</p>
-        <div class="flex flex-row gap-x-3">
-          <p class="text-4xl font-semibold">{{ app.links.path }}</p>
-          <Icon v-if="copy == false" icon="carbon:copy" width="30" class="self-center mt-1 cursor-pointer hover:text-yellow-200" @click="copy = true, view.copyURL(app.links.path)" />
-          <Icon
-            v-if="copy == true"
-            icon="material-symbols:check-small-rounded"
-            color="green"
-            class="z-auto self-center mt-1 cursor-pointer"
-            width="40"
-          />
-        </div>
-      </div>
-    </div>
+    <PopupMsg :copy="copy" :id="id" />
     <div class="w-full py-6 rounded-lg bg-neutral-900 my-7 px-7 h-fit">
       <h1 class="text-4xl font-bold text-neutral-50">Your Links</h1>
       <div class="mt-8 space-y-3">
@@ -31,9 +13,10 @@
               class="w-full border-0 rounded-lg bg-neutral-800 focus:outline-none focus:ring-0 md:ml-3"
               placeholder="Place your link here!"
               autocomplete="off"
+              autofocus
               v-model="app.links.link"
             />
-            <button @click="use_custom ? app.newLink(app.links.link, app.links.custom_link) : app.newLink(app.links.link)"
+            <button @click="use_custom ? app.newLink(app.links.link, app.links.custom_link, use_custom) : app.newLink(app.links.link)"
               type="submit"
               class="w-24 p-3 font-bold bg-green-400 rounded-r-lg hover:bg-green-500"
             >
@@ -80,7 +63,8 @@
                 @click="view.copyURL(`s.it/${link.path}`)"
               ></Icon>
               <div
-                class="bg-neutral-700 px-1.5 py-1 rounded-md ml-3 absolute right-24 flex justify-center items-center space-x-1 cursor-pointer hover:bg-neutral-600"
+                class="bg-neutral-700 px-1.5 py-1 rounded-md ml-3 absolute right-20 flex justify-center items-center space-x-1 cursor-pointer hover:bg-neutral-600"
+                @click="(app.links.edit = true), id = link.id"
               >
                 <h1 class="text-sm font-semibold">Edit</h1>
                 <Icon
@@ -91,6 +75,7 @@
               </div>
               <div
                 class="bg-neutral-700 px-1.5 py-1 rounded-md ml-3 absolute right-0 flex justify-center items-center space-x-1 cursor-pointer hover:bg-neutral-600"
+                @click="(app.links.delete = true), id = link.id"
               >
                 <h1  @click="app.deleteLink('2i8QcqgMeqMYu0NANVrc')" class="text-sm font-semibold">Delete</h1>
                 <Icon
@@ -139,24 +124,27 @@
         </div>
       </div>
     </div>
-    <div>
-      {{app.links.all_links}}
-    </div>
   </div>
 </template>
 <script>
 import { Icon } from "@iconify/vue";
 import { useApp, useView } from "../../stores/index.js";
+import PopupMsg from "../PopupMsg.vue"
 
 export default {
   data() {
     return {
       copy: false,
       use_custom: false,
+      id: null,
     };
   },
   components: {
     Icon,
+    PopupMsg
+  },
+  created() {
+    this.app.getLinks();
   },
   setup() {
     const view = useView();

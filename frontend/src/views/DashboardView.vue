@@ -18,6 +18,7 @@ import Sidebar from "../components/dashboard/Sidebar.vue";
 import HomeDashboard from "../components/dashboard/Home.vue";
 import EditMsg from "../components/EditMsg.vue";
 import { onMounted } from '@vue/runtime-core';
+// import EditMsg from "../components/EditMsg.vue";
 
 export default {
   setup() {
@@ -38,7 +39,7 @@ export default {
     AddToggle,
     Sidebar,
     HomeDashboard,
-    EditMsg,
+    // EditMsg,
   },
 };
 </script>
