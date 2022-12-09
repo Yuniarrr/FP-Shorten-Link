@@ -11,7 +11,7 @@
           placeholder="Place your link here!"
           autocomplete="off"
         />
-        <button
+        <button @click="app.newLink('http://google.com')"
           type="submit"
           class="bg-green-400 p-3 rounded-r-lg w-24 hover:bg-green-500 font-bold"
         >
@@ -81,7 +81,7 @@
 </template>
 <script>
 import { Icon } from "@iconify/vue";
-import { useView } from "../../stores/index.js";
+import { useApp, useView } from "../../stores/index.js";
 
 export default {
   components: {
@@ -89,7 +89,9 @@ export default {
   },
   setup() {
     const view = useView();
+    const app = useApp();
     return {
+      app,
       view,
     };
   },

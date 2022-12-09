@@ -5,8 +5,7 @@ import { auth, db } from '../config/firebase.config.js';
 class Middleware {
 	async decodeToken(req, res, next) {
 		try {
-			console.log(req.cookies);
-			const session = req.cookies.session;
+			const session = req.headers.authorization.split('Bearer ')[1];
 			const decodeValue = await admin.auth().verifySessionCookie(session);
 			if (decodeValue) {
 				req.user = decodeValue;
@@ -64,7 +63,7 @@ class Middleware {
         }
 	};
 	async reqPathValidation(req, res, next) {
-		db.collection('links').where('path', '==', req.body.path).get()
+		db.collection('links').where('path', '==', (req.body.path === undefined ? "" : req.body.path)).get()
 		.then((querySnapshot) => {
 			if (querySnapshot.empty) {
 				if(req.body.path === undefined) {

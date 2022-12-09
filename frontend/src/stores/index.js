@@ -22,19 +22,20 @@ export const useApp = defineStore({
       this.error = null;
       try {
         const data = await axios.post(URL_API + "api/login", {
-            email,
-            password,
-          })
-          .then((res) => {
-            document.cookie = `session=${res.data.result.session}; max-age=${res.data.result.options.maxAge};`;
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+          email,
+          password,
+        })
+        .then((res) => {
+          document.cookie = `session=${res.data.result.session}; max-age=${res.data.result.options.maxAge};`;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
       } catch (error) {
         console.log(error);
         this.error = error;
       } finally {
+        this.sessionCheck();
         this.router.push("/dashboard");
         this.loading = false;
       }
@@ -93,6 +94,39 @@ export const useApp = defineStore({
       }
       return false;
     },
+    async visitUrl(path) {
+      const url = await axios.post(URL_API + "api/links", {
+        path: path,
+      })
+      .then((res) => {
+        if(res.data.result.url) {
+          if(res.data.result.url.startsWith("http")) {
+            window.location.href = res.data.result.url;
+          } else {
+            window.location.href = "http://" + res.data.result.url;
+          }
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    },
+    async newLink(url, custom) {
+      console.log(document.cookie);
+      axios.put(URL_API + "api/links", {
+        url: url,
+      }, {
+        headers: {
+          "Authorization": "Bearer " + document.cookie.split("; ").find((row) => row.startsWith("session=")).split("=")[1]
+        }
+      })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    }
   },
 });
 

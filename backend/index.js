@@ -12,7 +12,12 @@ import helper from './utils/helper.util.js';
 const app = express();
 const port = 3000;
 
-app.use(cors());
+const corsOptions = {
+    origin: 'http://localhost',
+    credentials: true,
+}
+
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(morgan('tiny'));

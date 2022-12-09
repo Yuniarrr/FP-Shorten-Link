@@ -36,11 +36,6 @@ const router = createRouter({
         }
       ],
     },
-    // {
-    //   path: "/dashboard/settings",
-    //   name: "settings",
-    //   component: () => import("../views/PengaturanView.vue"),
-    // },
     {
       path: "/register",
       name: "register",
@@ -51,6 +46,16 @@ const router = createRouter({
       name: "login",
       component: () => import("../views/LoginView.vue"),
     },
+    {
+      path: "/:pathLink([a-zA-Z0-9]{5,40}$)",
+      name: "redirect",
+      component: () => import("../views/RedirectView.vue"),
+    },
+    {
+      path: "/:pathMatch(.*)*",
+      name: "notfound",
+      component: () => import("../views/NotFoundView.vue"),
+    }
   ],
 });
 
