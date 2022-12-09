@@ -8,6 +8,7 @@ import {
   onSnapshot,
 } from "firebase/firestore";
 import { db } from '../config/firebase.config.js';
+import dayjs from "dayjs";
 
 const URL_API = "http://localhost:3000/";
 
@@ -27,6 +28,15 @@ export const useApp = defineStore({
       success: false,
       path: "",
       all_links: [],
+    },
+    statistics: {
+      total_links: 0,
+      total_visitor: 0,
+      total_daily: 0,
+      total_monthly: 0,
+      links: []
+    },
+    logs: [],
       edit: false,
       delete: false
     }
@@ -227,6 +237,38 @@ export const useApp = defineStore({
       } finally {
         this.loading = false;
       }
+    },
+    async getStatistics() {
+      let links_id = [];
+      this.links.all_links.forEach((link) => {
+        links_id.push(link.id);
+        this.statistics.links.push({
+          id: link.id,
+          daily: 0,
+          monthly: 0,
+          total: 0
+        });
+      });
+
+      await db.collection("logs").where("link_id", "in", links_id).onSnapshot((querySnapshot) => {
+        this.statistics.total_daily = 0;
+        this.statistics.total_monthly = 0;
+        this.statistics.total_visitor = 0;
+        querySnapshot.forEach((doc) => {
+          this.statistics.links.find((l) => l.id === doc.data().link_id).total += 1;
+          this.statistics.total_visitor += 1;
+          if(dayjs(doc.data().timestamp).isSame(dayjs(), 'month')) {
+            this.statistics.links.find((l) => l.id === doc.data().link_id).monthly += 1;
+            this.statistics.total_monthly += 1;
+          }
+          if(dayjs(doc.data().timestamp).isSame(dayjs(), 'day')) {
+            this.statistics.links.find((l) => l.id === doc.data().link_id).daily += 1;
+            this.statistics.total_daily += 1;
+          }
+        });
+      });
+
+      this.statistics.total_links = this.links.all_links.length;
     },
     async editLink(id) {
       this.loading = true;

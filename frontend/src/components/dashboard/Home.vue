@@ -23,7 +23,7 @@
         </div>
         <div class="grid grid-cols-2">
           <div>
-            <p class="my-2 text-4xl font-semibold">27</p>
+            <p class="my-2 text-4xl font-semibold">{{ app.statistics.total_links }}</p>
             <p class="font-thin underline cursor-pointer">View All Links</p>
           </div>
           <Icon
@@ -45,7 +45,7 @@
         </div>
         <div class="grid grid-cols-2">
           <div>
-            <p class="my-2 text-4xl font-semibold">1,029</p>
+            <p class="my-2 text-4xl font-semibold">{{ app.statistics.total_visitor }}</p>
             <p class="font-thin underline cursor-pointer">View All Links</p>
           </div>
           <Icon
@@ -67,7 +67,7 @@
         </div>
         <div class="grid grid-cols-2">
           <div>
-            <p class="my-2 text-4xl font-semibold">27</p>
+            <p class="my-2 text-4xl font-semibold">{{ app.statistics.total_daily }}</p>
             <p class="font-thin underline cursor-pointer">View All Links</p>
           </div>
           <Icon
@@ -89,7 +89,7 @@
         </div>
         <div class="grid grid-cols-2">
           <div>
-            <p class="my-2 text-4xl font-semibold">27</p>
+            <p class="my-2 text-4xl font-semibold">{{ app.statistics.total_monthly }}</p>
             <p class="font-thin underline cursor-pointer">View All Links</p>
           </div>
           <Icon
@@ -177,7 +177,7 @@ import {
   CategoryScale,
 } from "chart.js";
 import { Icon } from "@iconify/vue";
-import { useView } from "../../stores/index.js";
+import { useApp, useView } from "../../stores/index.js";
 
 ChartJS.register(
   Title,
@@ -230,9 +230,19 @@ export default {
   },
   setup() {
     const view = useView();
+    const app = useApp();
     return {
+      app,
       view,
     };
+  },
+  watch: {
+    "app.links.all_links": {
+      handler() {
+        this.app.getStatistics();
+      },
+      deep: true,
+    },
   },
   components: {
     Line,
