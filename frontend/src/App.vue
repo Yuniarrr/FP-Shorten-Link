@@ -20,7 +20,7 @@ export default {
   },
   beforeMount() {
     this.app.sessionCheck();
-    // this.app.getLinks();
+    this.app.getLinks();
   },
 };
 </script>
