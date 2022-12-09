@@ -28,6 +28,8 @@ export const useApp = defineStore({
       success: false,
       path: "",
       all_links: [],
+      delete: false,
+      edit: false,
     },
     statistics: {
       total_links: 0,
