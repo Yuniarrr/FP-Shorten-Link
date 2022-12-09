@@ -93,6 +93,25 @@ export const useApp = defineStore({
       this.token = null;
       this.refreshToken = null;
     },
+    async signOut() {
+      this.loading = true;
+      axios.post(URL_API + "api/signout", {
+        user: document.cookie.split("; ").find((row) => row.startsWith("session=")).split("=")[1]
+      }, {
+        headers: {
+          "Authorization": "Bearer " + document.cookie.split("; ").find((row) => row.startsWith("session=")).split("=")[1]
+        }
+      })
+      .then((res) => {
+        this.user.logged_in = false;
+        this.router.push("/");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+      document.cookie = "session=; max-age=0";
+      this.loading = false;
+    },
     async sessionCheck() {
       // Todo: Check if token is valid
       const session = document.cookie
@@ -127,6 +146,7 @@ export const useApp = defineStore({
       });
     },
     async newLink(url, custom, use_custom) {
+      this.loading = true;
       axios.put(URL_API + "api/links", {
         url: url,
         path: use_custom ? custom : ""
@@ -147,9 +167,10 @@ export const useApp = defineStore({
       });
       this.links.link = "";
       this.links.custom_link = "";
-      this.getLinks();
+      this.loading = false;
     },
     async getLinks() {
+      this.loading = true;
       let parsedCookie = this.parseJwt(document.cookie);
       let user_id = parsedCookie.user_id;
       db.collection("links").onSnapshot((querySnapshot) => {
@@ -161,9 +182,10 @@ export const useApp = defineStore({
         });
         this.links.all_links = links;
       })
+      this.loading = false;
     },
     async deleteLink(id) {
-      console.log(id);
+      this.loading = true;
       axios.delete(URL_API + "api/links", {
         headers: {
           "Authorization": "Bearer " + document.cookie.split("; ").find((row) => row.startsWith("session=")).split("=")[1]
@@ -178,9 +200,10 @@ export const useApp = defineStore({
       .catch((err) => {
         console.log(err);
       });
-      this.getLinks();
+      this.loading = false;
     },
     async editLink(id) {
+      this.loading = true;
       axios.patch(URL_API + "api/links", {
         id,
         url: this.links.all_links.find((link) => link.id === id).url,
@@ -196,7 +219,7 @@ export const useApp = defineStore({
       .catch((err) => {
         console.log(err);
       });
-      this.getLinks();
+      this.loading = false;
     },
     parseJwt(token) {
       let base64Url = token.split('.')[1];
