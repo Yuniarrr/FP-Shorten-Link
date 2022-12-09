@@ -1,5 +1,5 @@
 <template>
-  <div class="left-0 right-0 bottom-0 top-0">
+  <div class="top-0 bottom-0 left-0 right-0">
     <RouterView />
     <LoadingVue v-if="app.loading" />
   </div>
@@ -20,6 +20,7 @@ export default {
   },
   beforeMount() {
     this.app.sessionCheck();
+    this.app.getLinks();
   },
 };
 </script>
