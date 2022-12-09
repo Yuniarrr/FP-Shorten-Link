@@ -92,7 +92,7 @@
               <div
                 class="bg-neutral-700 px-1.5 py-1 rounded-md ml-3 absolute right-0 flex justify-center items-center space-x-1 cursor-pointer hover:bg-neutral-600"
               >
-                <h1 class="text-sm font-semibold">Delete</h1>
+                <h1  @click="app.deleteLink('2i8QcqgMeqMYu0NANVrc')" class="text-sm font-semibold">Delete</h1>
                 <Icon
                   icon="material-symbols:delete-outline-rounded"
                   width="17"
