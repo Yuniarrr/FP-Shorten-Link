@@ -63,7 +63,7 @@
                 @click="view.copyURL(`s.it/${link.path}`)"
               ></Icon>
               <div
-                class="bg-neutral-700 px-1.5 py-1 rounded-md ml-3 absolute right-24 flex justify-center items-center space-x-1 cursor-pointer hover:bg-neutral-600"
+                class="bg-neutral-700 px-1.5 py-1 rounded-md ml-3 absolute right-20 flex justify-center items-center space-x-1 cursor-pointer hover:bg-neutral-600"
                 @click="(app.links.edit = true), id = link.id"
               >
                 <h1 class="text-sm font-semibold">Edit</h1>
