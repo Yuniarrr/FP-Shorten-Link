@@ -2,17 +2,14 @@ import { ref, computed } from "vue";
 import { defineStore } from "pinia";
 import Swal from "sweetalert2";
 import axios from "axios";
-import { initializeApp } from "firebase/app";
 import {
   getFirestore,
   collection,
   onSnapshot,
 } from "firebase/firestore";
-import { config } from "../../../backend/config/firebase.config.js";
+import { db } from '../config/firebase.config.js';
 
 const URL_API = "http://localhost:3000/";
-const app = initializeApp(config);
-const db = getFirestore(app);
 
 export const useApp = defineStore({
   id: "App",
@@ -154,7 +151,7 @@ export const useApp = defineStore({
     async getLinks() {
       let parsedCookie = this.parseJwt(document.cookie);
       let user_id = parsedCookie.user_id;
-      onSnapshot(collection(db, "links"), (querySnapshot) => {
+      db.collection("links").onSnapshot((querySnapshot) => {
         let links = [];
         querySnapshot.forEach((doc) => {
           if(doc.data().user_id === user_id) {
