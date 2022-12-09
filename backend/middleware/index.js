@@ -36,7 +36,14 @@ class Middleware {
 				error
 			})
 		});
-
+		
+		if(link === undefined) {
+			return res.status(404).send({
+				code: 404,
+				message: 'Cannot find link with the provided id'
+			});
+		}
+		
 		if(link.user_id !== req.user.user_id) {
 			return res.status(403).send({
 				code: 403,

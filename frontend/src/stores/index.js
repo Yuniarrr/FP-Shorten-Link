@@ -39,7 +39,6 @@ export const useApp = defineStore({
     logs: [],
       edit: false,
       delete: false
-    }
   }),
   actions: {
     async login(email, password) {
