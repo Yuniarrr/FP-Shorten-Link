@@ -236,7 +236,9 @@ app.patch('/api/links', middleware.decodeToken, middleware.reqURLValidation, mid
     }
 });
 
-app.delete('/api/links', middleware.decodeToken, (req, res) => {
+app.delete('/api/links', middleware.decodeToken, middleware.checkPermission, (req, res) => {
+    console.log(req.body.id);
+    console.log(req.user);
     try {
         db.collection('links').doc(req.body.id).delete()
         .then(() => {

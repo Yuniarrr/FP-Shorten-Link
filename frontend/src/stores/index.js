@@ -27,6 +27,7 @@ export const useApp = defineStore({
       success: false,
       path: "",
       all_links: [],
+      edit: false,
     }
   }),
   actions: {
@@ -129,7 +130,7 @@ export const useApp = defineStore({
       let use_custom = custom ? custom : null;
       axios.put(URL_API + "api/links", {
         url: url,
-        use_custom
+        // use_custom
       }, {
         headers: {
           "Authorization": "Bearer " + document.cookie.split("; ").find((row) => row.startsWith("session=")).split("=")[1]
@@ -147,6 +148,7 @@ export const useApp = defineStore({
       });
       this.links.link = "";
       this.links.custom_link = "";
+      this.getLinks();
     },
     async getLinks() {
       let parsedCookie = this.parseJwt(document.cookie);
@@ -161,11 +163,33 @@ export const useApp = defineStore({
         this.links.all_links = links;
       })
     },
+    async deleteLink(id) {
+      axios.delete(URL_API + "api/links", {
+        headers: {
+          "Authorization": "Bearer " + document.cookie.split("; ").find((row) => row.startsWith("session=")).split("=")[1]
+        },
+        data: {
+          id
+        }
+      })
+      .then((res) => {
+        console.log("successfull deleted");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+      this.getLinks();
+    },
     parseJwt (token) {
       let base64Url = token.split('.')[1];
       let base64 = base64Url.replace('-', '+').replace('_', '/');
       return JSON.parse(window.atob(base64));
     },
+    delete(id) {
+      db.collection("links").doc(id).delete();
+      this.getLinks();
+      console.log("deleted");
+    }
   },
 });
 
