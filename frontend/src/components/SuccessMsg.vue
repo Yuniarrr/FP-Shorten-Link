@@ -8,15 +8,15 @@
       width="25"
       @click="(app.links.success = false), (app.links.path = ``)"
     />
-    <p class="text-2xl">Link created successfully !!</p>
-    <div class="flex flex-row gap-x-3">
+    <p class="text-2xl text-center">Link created successfully !!</p>
+    <div class="flex md:flex-col lg:flex-row gap-x-3 md:mx-3 sm:flex-col sm:gap-y-3 sm:mt-2">
       <p class="text-4xl font-semibold">{{ app.links.path }}</p>
       <Icon
         v-if="copy == false"
         icon="carbon:copy"
         width="30"
         class="self-center mt-1 cursor-pointer hover:text-yellow-200"
-        @click="(copy = true), view.copyURL(app.links.path)"
+        @click="(copy = true), copyURL(app.links.path)"
       />
       <Icon
         v-if="copy == true"
@@ -48,6 +48,11 @@ export default {
   },
   components: {
     Icon,
+  },
+  methods: {
+    copyURL(url) {
+      navigator.clipboard.writeText(url);
+    },
   },
 };
 </script>
