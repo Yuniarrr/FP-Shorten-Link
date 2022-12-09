@@ -189,7 +189,7 @@ export const useApp = defineStore({
       let parsedCookie = this.parseJwt(document.cookie);
       let user_id = parsedCookie.user_id;
       try {
-        db.collection("links").onSnapshot((querySnapshot) => {
+        db.collection("links").orderBy("created_at", "desc").onSnapshot((querySnapshot) => {
           let links = [];
           querySnapshot.forEach((doc) => {
             if(doc.data().user_id === user_id) {
