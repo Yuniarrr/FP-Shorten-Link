@@ -16,7 +16,16 @@
               autofocus
               v-model="app.links.link"
             />
-            <button @click="use_custom ? app.newLink(app.links.link, app.links.custom_link, use_custom) : app.newLink(app.links.link)"
+            <button
+              @click="
+                use_custom
+                  ? app.newLink(
+                      app.links.link,
+                      app.links.custom_link,
+                      use_custom
+                    )
+                  : app.newLink(app.links.link)
+              "
               type="submit"
               class="w-24 p-3 font-bold bg-green-400 rounded-r-lg hover:bg-green-500"
             >
@@ -24,17 +33,33 @@
             </button>
           </div>
           <div class="flex items-end justify-end w-2/3 mb-6 -mt-4">
-            <p class="font-light">Use 
-              <span v-if="use_custom == false" class="cursor-pointer hover:underline" @click="use_custom = true">
-              Custom Link
+            <p class="font-light">
+              Use
+              <span
+                v-if="use_custom == false"
+                class="cursor-pointer hover:underline"
+                @click="use_custom = true"
+              >
+                Custom Link
               </span>
-              <span v-if="use_custom == true" class="cursor-pointer hover:underline" @click="use_custom = false">
-              Default Link
+              <span
+                v-if="use_custom == true"
+                class="cursor-pointer hover:underline"
+                @click="use_custom = false"
+              >
+                Default Link
               </span>
             </p>
           </div>
-          <div v-if="use_custom == true" class="flex flex-row w-2/3 p-5 -mt-8 rounded-lg">
-            <div class="self-center text-lg basis-1/12 bg-neutral-700 p-1.5 rounded-l-lg text-center font-bold text-yellow-200">s.it/</div>
+          <div
+            v-if="use_custom == true"
+            class="flex flex-row w-2/3 p-5 -mt-8 rounded-lg"
+          >
+            <div
+              class="self-center text-lg basis-1/12 bg-neutral-700 p-1.5 rounded-l-lg text-center font-bold text-yellow-200"
+            >
+              s.it/
+            </div>
             <div class="basis-11/12 bg-neutral-800">
               <input
                 type="url"
@@ -53,7 +78,11 @@
         <div v-for="link in app.links.all_links" :key="link.id">
           <div class="w-2/3 p-5 rounded-lg bg-neutral-800">
             <div class="relative flex">
-              <a :href="'http://s.it/'+link.path" target="_blank" class="text-2xl font-medium text-yellow-200 cursor-pointer hover:underline">
+              <a
+                :href="'http://s.it/' + link.path"
+                target="_blank"
+                class="text-2xl font-medium text-yellow-200 cursor-pointer hover:underline"
+              >
                 {{ `s.it/${link.path}` }}
               </a>
               <Icon
@@ -64,7 +93,7 @@
               ></Icon>
               <div
                 class="bg-neutral-700 px-1.5 py-1 rounded-md ml-3 absolute right-20 flex justify-center items-center space-x-1 cursor-pointer hover:bg-neutral-600"
-                @click="(app.links.edit = true), id = link.id"
+                @click="(app.links.edit = true), (id = link.id)"
               >
                 <h1 class="text-sm font-semibold">Edit</h1>
                 <Icon
@@ -75,9 +104,14 @@
               </div>
               <div
                 class="bg-neutral-700 px-1.5 py-1 rounded-md ml-3 absolute right-0 flex justify-center items-center space-x-1 cursor-pointer hover:bg-neutral-600"
-                @click="(app.links.delete = true), id = link.id"
+                @click="(app.links.delete = true), (id = link.id)"
               >
-                <h1  @click="app.deleteLink('2i8QcqgMeqMYu0NANVrc')" class="text-sm font-semibold">Delete</h1>
+                <h1
+                  @click="app.deleteLink('2i8QcqgMeqMYu0NANVrc')"
+                  class="text-sm font-semibold"
+                >
+                  Delete
+                </h1>
                 <Icon
                   icon="material-symbols:delete-outline-rounded"
                   width="17"
@@ -85,7 +119,12 @@
                 ></Icon>
               </div>
             </div>
-            <p @click="openLink(link.url)" class="cursor-pointer text-neutral-400 hover:underline">{{ link.url }}</p>
+            <p
+              @click="openLink(link.url)"
+              class="cursor-pointer text-neutral-400 hover:underline"
+            >
+              {{ link.url }}
+            </p>
             <hr class="mt-1" />
             <div class="relative flex w-full mt-2">
               <div class="flex items-center space-x-1">
@@ -94,7 +133,9 @@
                   width="20"
                   class="text-neutral-500"
                 ></Icon>
-                <h1 class="text-neutral-500">{{ convertTime(link.updated_at) }}</h1>
+                <h1 class="text-neutral-500">
+                  {{ convertTime(link.updated_at) }}
+                </h1>
               </div>
               <div class="absolute right-0">
                 <div class="flex items-center space-x-2">
@@ -129,7 +170,7 @@
 <script>
 import { Icon } from "@iconify/vue";
 import { useApp, useView } from "../../stores/index.js";
-import PopupMsg from "../PopupMsg.vue"
+import PopupMsg from "../PopupMsg.vue";
 
 export default {
   data() {
@@ -141,7 +182,7 @@ export default {
   },
   components: {
     Icon,
-    PopupMsg
+    PopupMsg,
   },
   created() {
     this.app.getLinks();

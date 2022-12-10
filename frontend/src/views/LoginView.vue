@@ -114,7 +114,7 @@ export default {
     Icon,
   },
   beforeMount() {
-    if(this.app.user.logged_in) {
+    if (this.app.user.logged_in) {
       this.$router.push("/dashboard");
     }
   },

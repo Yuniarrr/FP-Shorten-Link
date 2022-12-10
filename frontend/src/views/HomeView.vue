@@ -26,11 +26,11 @@
                 type="submit"
                 class="bg-green-500 text-slate-50 p-3 font-bold rounded-r-lg"
               >
-              <Icon
-              icon="majesticons:comet"
-              width="30"
-              class="text-white"
-            ></Icon>
+                <Icon
+                  icon="majesticons:comet"
+                  width="30"
+                  class="text-white"
+                ></Icon>
               </button>
             </div>
           </div>

@@ -23,18 +23,18 @@
         class="w-full border-0 rounded-lg bg-neutral-900 focus:outline-none focus:ring-0"
         placeholder="Place your full-url here!"
         autocomplete="off"
-        v-model="app.links.all_links.find(element => element.id == id).url"
+        v-model="app.links.all_links.find((element) => element.id == id).url"
       />
     </div>
     <div class="flex flex-col w-5/6 gap-y-1">
       <p class="ml-1 text-lg font-normal">Short Url</p>
       <div class="flex flex-row">
         <input
-            type="url"
-            class="w-full pl-12 border-0 rounded-lg bg-neutral-900 focus:outline-none focus:ring-0"
-            placeholder="Place your short-url here!"
-            autocomplete="off"
-            v-model="app.links.all_links.find(element => element.id == id).path"
+          type="url"
+          class="w-full pl-12 border-0 rounded-lg bg-neutral-900 focus:outline-none focus:ring-0"
+          placeholder="Place your short-url here!"
+          autocomplete="off"
+          v-model="app.links.all_links.find((element) => element.id == id).path"
         />
         <p class="fixed z-20 self-center my-auto ml-3 font-semibold">s.it/</p>
       </div>
@@ -42,7 +42,7 @@
     <button
       type="submit"
       class="w-24 p-3 mt-4 -mb-2 font-bold bg-green-400 rounded-lg hover:bg-green-500"
-      @click="(app.links.edit = false), (app.editLink(id))"
+      @click="(app.links.edit = false), app.editLink(id)"
     >
       Save
     </button>

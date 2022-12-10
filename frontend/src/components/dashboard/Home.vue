@@ -1,5 +1,7 @@
 <template>
-  <div class="w-full py-6 ml-24 mr-5 rounded-lg mb-9 my-7 bg-neutral-900 px-7 h-fit">
+  <div
+    class="w-full py-6 ml-24 mr-5 rounded-lg mb-9 my-7 bg-neutral-900 px-7 h-fit"
+  >
     <h1 class="text-4xl font-bold text-neutral-50">Dashboard</h1>
 
     <div class="my-2">
@@ -23,8 +25,9 @@
         </div>
         <div class="grid grid-cols-2">
           <div>
-            <p class="my-2 text-4xl font-semibold">{{ app.statistics.total_links }}</p>
-            <p class="font-thin underline cursor-pointer">View All Links</p>
+            <p class="my-2 text-4xl font-semibold">
+              {{ app.statistics.total_links }}
+            </p>
           </div>
           <Icon
             class="p-2.5 bg-green-900 rounded-md place-self-end"
@@ -45,8 +48,9 @@
         </div>
         <div class="grid grid-cols-2">
           <div>
-            <p class="my-2 text-4xl font-semibold">{{ app.statistics.total_visitor }}</p>
-            <p class="font-thin underline cursor-pointer">View All Links</p>
+            <p class="my-2 text-4xl font-semibold">
+              {{ app.statistics.total_visitor }}
+            </p>
           </div>
           <Icon
             class="p-2.5 bg-blue-900 rounded-md place-self-end"
@@ -60,15 +64,24 @@
         <div class="flex justify-between">
           <p class="text-sm font-bold text-slate-400">DAILY VISITED</p>
           <Icon
-            icon="material-symbols:keyboard-double-arrow-down-rounded"
+            :icon="
+              app.statistics.total_daily[6] > app.statistics.total_daily[5]
+                ? 'material-symbols:keyboard-double-arrow-up-rounded'
+                : 'material-symbols:keyboard-double-arrow-down-rounded'
+            "
             width="23"
-            color="#ff4a37"
+            :color="
+              app.statistics.total_daily[6] > app.statistics.total_daily[5]
+                ? '#31c48d'
+                : '#ff4a37'
+            "
           />
         </div>
         <div class="grid grid-cols-2">
           <div>
-            <p class="my-2 text-4xl font-semibold">{{ app.statistics.total_daily[6] }}</p>
-            <p class="font-thin underline cursor-pointer">View All Links</p>
+            <p class="my-2 text-4xl font-semibold">
+              {{ app.statistics.total_daily[6] }}
+            </p>
           </div>
           <Icon
             class="p-2.5 bg-amber-900 opacity-80 rounded-md place-self-end"
@@ -82,15 +95,26 @@
         <div class="flex justify-between">
           <p class="text-sm font-bold text-slate-400">MONTHLY VISITED</p>
           <Icon
-            icon="material-symbols:keyboard-double-arrow-down-rounded"
+            :icon="
+              app.statistics.total_monthly[11] >
+              app.statistics.total_monthly[10]
+                ? 'material-symbols:keyboard-double-arrow-up-rounded'
+                : 'material-symbols:keyboard-double-arrow-down-rounded'
+            "
             width="23"
-            color="#ff4a37"
+            :color="
+              app.statistics.total_monthly[11] >
+              app.statistics.total_monthly[10]
+                ? '#31c48d'
+                : '#ff4a37'
+            "
           />
         </div>
         <div class="grid grid-cols-2">
           <div>
-            <p class="my-2 text-4xl font-semibold">{{ app.statistics.total_monthly[11] }}</p>
-            <p class="font-thin underline cursor-pointer">View All Links</p>
+            <p class="my-2 text-4xl font-semibold">
+              {{ app.statistics.total_monthly[11] }}
+            </p>
           </div>
           <Icon
             class="p-2.5 bg-zinc-900 opacity-95 rounded-md place-self-end"
@@ -105,7 +129,9 @@
     <div class="grid grid-cols-8 gap-3">
       <div class="col-span-3 bg-neutral-800 rounded-md">
         <div class="border-b-2 border-b-neutral-600">
-          <p class="text-lg my-2 ml-5 font-bold text-neutral-50">Daily Visitor</p>
+          <p class="text-lg my-2 ml-5 font-bold text-neutral-50">
+            Daily Visitor
+          </p>
         </div>
         <div class="w-full">
           <Line
@@ -116,7 +142,9 @@
       </div>
       <div class="col-span-3 bg-neutral-800 rounded-md">
         <div class="border-b-2 border-b-neutral-600">
-          <p class="text-lg my-2 ml-5 font-bold text-neutral-50">Monthly Visitor</p>
+          <p class="text-lg my-2 ml-5 font-bold text-neutral-50">
+            Monthly Visitor
+          </p>
         </div>
         <div class="w-full">
           <Line
@@ -127,7 +155,9 @@
       </div>
       <div class="col-span-2 bg-neutral-800 rounded-md">
         <div class="border-b-2 border-b-neutral-600">
-          <p class="text-lg my-2 ml-5 font-bold text-neutral-50">Top Visited Links</p>
+          <p class="text-lg my-2 ml-5 font-bold text-neutral-50">
+            Top Visited Links
+          </p>
         </div>
         <div class="flex flex-col mx-5 my-3 gap-y-2">
           <div class="flex lg:flex-row xl:flex-row md:flex-col">

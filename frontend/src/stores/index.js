@@ -2,12 +2,8 @@ import { ref, computed } from "vue";
 import { defineStore } from "pinia";
 import Swal from "sweetalert2";
 import axios from "axios";
-import {
-  getFirestore,
-  collection,
-  onSnapshot,
-} from "firebase/firestore";
-import { db } from '../config/firebase.config.js';
+import { getFirestore, collection, onSnapshot } from "firebase/firestore";
+import { db } from "../config/firebase.config.js";
 import dayjs from "dayjs";
 
 const URL_API = "http://localhost:3000/";
@@ -36,7 +32,7 @@ export const useApp = defineStore({
       total_visitor: 0,
       total_daily: [],
       total_monthly: [],
-      links: []
+      links: [],
     },
     chartDataDaily: {
       labels: [
@@ -81,23 +77,24 @@ export const useApp = defineStore({
     },
     logs: [],
     edit: false,
-    delete: false
+    delete: false,
   }),
   actions: {
     async login(email, password) {
       this.loading = true;
       this.error = null;
       try {
-        const data = await axios.post(URL_API + "api/login", {
-          email,
-          password,
-        })
-        .then((res) => {
-          document.cookie = `session=${res.data.result.session}; max-age=${res.data.result.options.maxAge};`;
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+        const data = await axios
+          .post(URL_API + "api/login", {
+            email,
+            password,
+          })
+          .then((res) => {
+            document.cookie = `session=${res.data.result.session}; max-age=${res.data.result.options.maxAge};`;
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       } catch (error) {
         console.log(error);
         this.error = error;
@@ -148,20 +145,33 @@ export const useApp = defineStore({
     async signOut() {
       this.loading = true;
       try {
-        axios.post(URL_API + "api/signout", {
-          user: document.cookie.split("; ").find((row) => row.startsWith("session=")).split("=")[1]
-        }, {
-          headers: {
-            "Authorization": "Bearer " + document.cookie.split("; ").find((row) => row.startsWith("session=")).split("=")[1]
-          }
-        })
-        .then((res) => {
-          this.user.logged_in = false;
-          this.router.push("/");
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+        axios
+          .post(
+            URL_API + "api/signout",
+            {
+              user: document.cookie
+                .split("; ")
+                .find((row) => row.startsWith("session="))
+                .split("=")[1],
+            },
+            {
+              headers: {
+                Authorization:
+                  "Bearer " +
+                  document.cookie
+                    .split("; ")
+                    .find((row) => row.startsWith("session="))
+                    .split("=")[1],
+              },
+            }
+          )
+          .then((res) => {
+            this.user.logged_in = false;
+            this.router.push("/");
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       } catch (error) {
         console.log(error);
         this.error = error;
@@ -187,46 +197,53 @@ export const useApp = defineStore({
       return false;
     },
     async visitUrl(path) {
-      const url = await axios.post(URL_API + "api/links", {
-        path: path,
-      })
-      .then((res) => {
-        if(res.data.result.url) {
-          if(res.data.result.url.startsWith("http")) {
-            window.location.href = res.data.result.url;
-          } else {
-            window.location.href = "http://" + res.data.result.url;
-          }
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    },
-    async newLink(url, custom, use_custom) {
-      this.loading = true;
-      let data = {
-        url
-      };
-      if(use_custom) {
-        data.path = custom;
-      }
-      try {
-        axios.put(URL_API + "api/links", data, {
-          headers: {
-            "Authorization": "Bearer " + document.cookie.split("; ").find((row) => row.startsWith("session=")).split("=")[1]
-          }
+      const url = await axios
+        .post(URL_API + "api/links", {
+          path: path,
         })
         .then((res) => {
-          console.log(`res ${res.data.result.path}`);
-          if(res.data.result.path) {
-            this.links.success = true;
-            this.links.path = "s.it/" + res.data.result.path;
+          if (res.data.result.url) {
+            if (res.data.result.url.startsWith("http")) {
+              window.location.href = res.data.result.url;
+            } else {
+              window.location.href = "http://" + res.data.result.url;
+            }
           }
         })
         .catch((err) => {
           console.log(err);
         });
+    },
+    async newLink(url, custom, use_custom) {
+      this.loading = true;
+      let data = {
+        url,
+      };
+      if (use_custom) {
+        data.path = custom;
+      }
+      try {
+        axios
+          .put(URL_API + "api/links", data, {
+            headers: {
+              Authorization:
+                "Bearer " +
+                document.cookie
+                  .split("; ")
+                  .find((row) => row.startsWith("session="))
+                  .split("=")[1],
+            },
+          })
+          .then((res) => {
+            console.log(`res ${res.data.result.path}`);
+            if (res.data.result.path) {
+              this.links.success = true;
+              this.links.path = "s.it/" + res.data.result.path;
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       } catch (error) {
         console.log(error);
         this.error = error;
@@ -241,15 +258,17 @@ export const useApp = defineStore({
       let parsedCookie = this.parseJwt(document.cookie);
       let user_id = parsedCookie.user_id;
       try {
-        db.collection("links").orderBy("created_at", "desc").onSnapshot((querySnapshot) => {
-          let links = [];
-          querySnapshot.forEach((doc) => {
-            if(doc.data().user_id === user_id) {
-              links.push({ ...doc.data(), id: doc.id });
-            }
+        db.collection("links")
+          .orderBy("created_at", "desc")
+          .onSnapshot((querySnapshot) => {
+            let links = [];
+            querySnapshot.forEach((doc) => {
+              if (doc.data().user_id === user_id) {
+                links.push({ ...doc.data(), id: doc.id });
+              }
+            });
+            this.links.all_links = links;
           });
-          this.links.all_links = links;
-        })
       } catch (error) {
         console.log(error);
       } finally {
@@ -259,20 +278,26 @@ export const useApp = defineStore({
     async deleteLink(id) {
       this.loading = true;
       try {
-        axios.delete(URL_API + "api/links", {
-          headers: {
-            "Authorization": "Bearer " + document.cookie.split("; ").find((row) => row.startsWith("session=")).split("=")[1]
-          },
-          data: {
-            id
-          }
-        })
-        .then((res) => {
-          console.log("successfull deleted");
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+        axios
+          .delete(URL_API + "api/links", {
+            headers: {
+              Authorization:
+                "Bearer " +
+                document.cookie
+                  .split("; ")
+                  .find((row) => row.startsWith("session="))
+                  .split("=")[1],
+            },
+            data: {
+              id,
+            },
+          })
+          .then((res) => {
+            console.log("successfull deleted");
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       } catch (error) {
         console.log(error);
         this.error = error;
@@ -292,54 +317,83 @@ export const useApp = defineStore({
         });
       });
 
-      await db.collection("logs").where("link_id", "in", links_id).onSnapshot((querySnapshot) => {
-        this.statistics.total_daily = [0, 0, 0, 0, 0, 0, 0];
-        this.statistics.total_monthly = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-        this.statistics.total_visitor = 0;
-        querySnapshot.forEach((doc) => {
-          this.statistics.links.find((l) => l.id === doc.data().link_id).total += 1;
-          this.statistics.total_visitor += 1;
-          for(let i = 0; i < 7; i++){
-            if(dayjs(doc.data().timestamp).isSame(dayjs().subtract(i, "day"), 'day')) {
-              this.statistics.links.find((l) => l.id === doc.data().link_id).daily[i] += 1;
-              this.statistics.total_daily[6-i] += 1;
-              this.chartDataDaily.datasets[0].data[6-i] = this.statistics.total_daily[6-i];
+      await db
+        .collection("logs")
+        .where("link_id", "in", links_id)
+        .onSnapshot((querySnapshot) => {
+          this.statistics.total_daily = [0, 0, 0, 0, 0, 0, 0];
+          this.statistics.total_monthly = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+          this.statistics.total_visitor = 0;
+          querySnapshot.forEach((doc) => {
+            this.statistics.links.find(
+              (l) => l.id === doc.data().link_id
+            ).total += 1;
+            this.statistics.total_visitor += 1;
+            for (let i = 0; i < 7; i++) {
+              if (
+                dayjs(doc.data().timestamp).isSame(
+                  dayjs().subtract(i, "day"),
+                  "day"
+                )
+              ) {
+                this.statistics.links.find(
+                  (l) => l.id === doc.data().link_id
+                ).daily[i] += 1;
+                this.statistics.total_daily[6 - i] += 1;
+                this.chartDataDaily.datasets[0].data[6 - i] =
+                  this.statistics.total_daily[6 - i];
+              }
             }
-          }
-          for(let i = 0; i < 12; i++){
-            if(dayjs(doc.data().timestamp).isSame(dayjs().subtract(i, "month"), 'month')) {
-              this.statistics.links.find((l) => l.id === doc.data().link_id).monthly[i] += 1;
-              this.statistics.total_monthly[11-i] += 1;
-              this.chartDataMonthly.datasets[0].data[11-i] = this.statistics.total_monthly[11-i];
+            for (let i = 0; i < 12; i++) {
+              if (
+                dayjs(doc.data().timestamp).isSame(
+                  dayjs().subtract(i, "month"),
+                  "month"
+                )
+              ) {
+                this.statistics.links.find(
+                  (l) => l.id === doc.data().link_id
+                ).monthly[i] += 1;
+                this.statistics.total_monthly[11 - i] += 1;
+                this.chartDataMonthly.datasets[0].data[11 - i] =
+                  this.statistics.total_monthly[11 - i];
+              }
             }
-          }
+          });
+          console.log("chart", this.chartDataDaily.datasets);
         });
-        console.log('chart', this.chartDataDaily.datasets)
-      });
 
       this.statistics.total_links = this.links.all_links.length;
     },
-    async getGraphicalStatistics() {
-
-    },
+    async getGraphicalStatistics() {},
     async editLink(id) {
       this.loading = true;
       try {
-        axios.patch(URL_API + "api/links", {
-          id,
-          url: this.links.all_links.find((link) => link.id === id).url,
-          path: this.links.all_links.find((link) => link.id === id).path
-        }, {
-          headers: {
-            "Authorization": "Bearer " + document.cookie.split("; ").find((row) => row.startsWith("session=")).split("=")[1]
-          }
-        })
-        .then((res) => {
-          console.log("successfull edited");
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+        axios
+          .patch(
+            URL_API + "api/links",
+            {
+              id,
+              url: this.links.all_links.find((link) => link.id === id).url,
+              path: this.links.all_links.find((link) => link.id === id).path,
+            },
+            {
+              headers: {
+                Authorization:
+                  "Bearer " +
+                  document.cookie
+                    .split("; ")
+                    .find((row) => row.startsWith("session="))
+                    .split("=")[1],
+              },
+            }
+          )
+          .then((res) => {
+            console.log("successfull edited");
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       } catch (error) {
         console.log(error);
         this.error = error;
@@ -348,8 +402,8 @@ export const useApp = defineStore({
       }
     },
     parseJwt(token) {
-      let base64Url = token.split('.')[1];
-      let base64 = base64Url.replace('-', '+').replace('_', '/');
+      let base64Url = token.split(".")[1];
+      let base64 = base64Url.replace("-", "+").replace("_", "/");
       return JSON.parse(window.atob(base64));
     },
   },
@@ -363,7 +417,7 @@ export const useView = defineStore({
     copy: false,
     links: {
       edit: false,
-    }
+    },
   }),
   actions: {
     copyURL(text) {

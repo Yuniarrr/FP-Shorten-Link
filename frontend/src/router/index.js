@@ -33,7 +33,7 @@ const router = createRouter({
           path: "profile",
           name: "profile",
           component: () => import("../components/dashboard/Profile.vue"),
-        }
+        },
       ],
     },
     {
@@ -55,7 +55,7 @@ const router = createRouter({
       path: "/:pathMatch(.*)*",
       name: "notfound",
       component: () => import("../views/NotFoundView.vue"),
-    }
+    },
   ],
 });
 

@@ -8,8 +8,12 @@
       width="25"
       @click="app.links.delete = false"
     />
-    <p class="text-2xl font-medium md:mx-3 sm:mx-3 sm:text-center">Are you sure delete it?</p>
-    <div class="flex my-5 -mb-2 lg:flex-row md:flex-row sm:flex-col sm:gap-y-4 gap-x-6">
+    <p class="text-2xl font-medium md:mx-3 sm:mx-3 sm:text-center">
+      Are you sure delete it?
+    </p>
+    <div
+      class="flex my-5 -mb-2 lg:flex-row md:flex-row sm:flex-col sm:gap-y-4 gap-x-6"
+    >
       <button
         type="submit"
         class="w-24 p-3 font-bold bg-green-400 rounded-lg hover:bg-green-500"
@@ -20,7 +24,7 @@
       <button
         type="submit"
         class="w-24 p-3 font-bold bg-red-500 rounded-lg hover:bg-red-600"
-        @click="(app.links.delete = false)"
+        @click="app.links.delete = false"
       >
         No
       </button>

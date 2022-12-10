@@ -9,7 +9,9 @@
       @click="(app.links.success = false), (app.links.path = ``)"
     />
     <p class="text-2xl text-center">Link created successfully !!</p>
-    <div class="flex md:flex-col lg:flex-row gap-x-3 md:mx-3 sm:flex-col sm:gap-y-3 sm:mt-2">
+    <div
+      class="flex md:flex-col lg:flex-row gap-x-3 md:mx-3 sm:flex-col sm:gap-y-3 sm:mt-2"
+    >
       <p class="text-4xl font-semibold">{{ app.links.path }}</p>
       <Icon
         v-if="copy == false"

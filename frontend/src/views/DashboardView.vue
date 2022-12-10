@@ -17,7 +17,7 @@ import Sidebar from "../components/dashboard/Sidebar.vue";
 // import NavDashboard from "../components/NavDashboard.vue";
 import HomeDashboard from "../components/dashboard/Home.vue";
 import EditMsg from "../components/EditMsg.vue";
-import { onMounted } from '@vue/runtime-core';
+import { onMounted } from "@vue/runtime-core";
 // import EditMsg from "../components/EditMsg.vue";
 
 export default {
