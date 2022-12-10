@@ -41,5 +41,8 @@ export default {
     HomeDashboard,
     // EditMsg,
   },
+  beforeMount() {
+    this.app.getLinks();
+  },
 };
 </script>

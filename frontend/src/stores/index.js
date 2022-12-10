@@ -197,22 +197,32 @@ export const useApp = defineStore({
       return false;
     },
     async visitUrl(path) {
-      const url = await axios
-        .post(URL_API + "api/links", {
-          path: path,
-        })
-        .then((res) => {
-          if (res.data.result.url) {
-            if (res.data.result.url.startsWith("http")) {
-              window.location.href = res.data.result.url;
-            } else {
-              window.location.href = "http://" + res.data.result.url;
+      this.loading = true;
+      try {
+        const url = await axios
+          .post(URL_API + "api/links", {
+            path: path,
+          })
+          .then((res) => {
+            if (res.data.result.url) {
+              if (res.data.result.url.startsWith("http")) {
+                // window.location.href = res.data.result.url;
+                window.open(res.data.result.url, "_blank");
+              } else {
+                // window.location.href = "http://" + res.data.result.url;
+                window.open("http://" + res.data.result.url, "_blank");
+              }
             }
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      } catch (error) {
+        console.log(error);
+        this.error = error;
+      } finally {
+        this.loading = false;
+      }
     },
     async newLink(url, custom, use_custom) {
       this.loading = true;
@@ -307,63 +317,71 @@ export const useApp = defineStore({
     },
     async getStatistics() {
       let links_id = [];
-      this.links.all_links.forEach((link) => {
-        links_id.push(link.id);
-        this.statistics.links.push({
-          id: link.id,
-          daily: [0, 0, 0, 0, 0, 0, 0],
-          monthly: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          total: 0,
-        });
-      });
-
-      await db
-        .collection("logs")
-        .where("link_id", "in", links_id)
-        .onSnapshot((querySnapshot) => {
-          this.statistics.total_daily = [0, 0, 0, 0, 0, 0, 0];
-          this.statistics.total_monthly = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-          this.statistics.total_visitor = 0;
-          querySnapshot.forEach((doc) => {
-            this.statistics.links.find(
-              (l) => l.id === doc.data().link_id
-            ).total += 1;
-            this.statistics.total_visitor += 1;
-            for (let i = 0; i < 7; i++) {
-              if (
-                dayjs(doc.data().timestamp).isSame(
-                  dayjs().subtract(i, "day"),
-                  "day"
-                )
-              ) {
-                this.statistics.links.find(
-                  (l) => l.id === doc.data().link_id
-                ).daily[i] += 1;
-                this.statistics.total_daily[6 - i] += 1;
-                this.chartDataDaily.datasets[0].data[6 - i] =
-                  this.statistics.total_daily[6 - i];
-              }
-            }
-            for (let i = 0; i < 12; i++) {
-              if (
-                dayjs(doc.data().timestamp).isSame(
-                  dayjs().subtract(i, "month"),
-                  "month"
-                )
-              ) {
-                this.statistics.links.find(
-                  (l) => l.id === doc.data().link_id
-                ).monthly[i] += 1;
-                this.statistics.total_monthly[11 - i] += 1;
-                this.chartDataMonthly.datasets[0].data[11 - i] =
-                  this.statistics.total_monthly[11 - i];
-              }
-            }
+      this.loading = true;
+      try {
+        this.links.all_links.forEach((link) => {
+          links_id.push(link.id);
+          this.statistics.links.push({
+            id: link.id,
+            daily: [0, 0, 0, 0, 0, 0, 0],
+            monthly: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            total: 0,
           });
-          console.log("chart", this.chartDataDaily.datasets);
         });
-
-      this.statistics.total_links = this.links.all_links.length;
+  
+        await db
+          .collection("logs")
+          .where("link_id", "in", links_id)
+          .onSnapshot((querySnapshot) => {
+            this.statistics.total_daily = [0, 0, 0, 0, 0, 0, 0];
+            this.statistics.total_monthly = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+            this.statistics.total_visitor = 0;
+            querySnapshot.forEach((doc) => {
+              this.statistics.links.find(
+                (l) => l.id === doc.data().link_id
+              ).total += 1;
+              this.statistics.total_visitor += 1;
+              for (let i = 0; i < 7; i++) {
+                if (
+                  dayjs(doc.data().timestamp).isSame(
+                    dayjs().subtract(i, "day"),
+                    "day"
+                  )
+                ) {
+                  this.statistics.links.find(
+                    (l) => l.id === doc.data().link_id
+                  ).daily[i] += 1;
+                  this.statistics.total_daily[6 - i] += 1;
+                  this.chartDataDaily.datasets[0].data[6 - i] =
+                    this.statistics.total_daily[6 - i];
+                }
+              }
+              for (let i = 0; i < 12; i++) {
+                if (
+                  dayjs(doc.data().timestamp).isSame(
+                    dayjs().subtract(i, "month"),
+                    "month"
+                  )
+                ) {
+                  this.statistics.links.find(
+                    (l) => l.id === doc.data().link_id
+                  ).monthly[i] += 1;
+                  this.statistics.total_monthly[11 - i] += 1;
+                  this.chartDataMonthly.datasets[0].data[11 - i] =
+                    this.statistics.total_monthly[11 - i];
+                }
+              }
+            });
+            console.log("chart", this.chartDataDaily.datasets);
+          });
+  
+        this.statistics.total_links = this.links.all_links.length;
+      } catch (error) {
+        console.log(error);
+        this.error = error;
+      } finally {
+        this.loading = false;
+      }
     },
     async getGraphicalStatistics() {},
     async editLink(id) {

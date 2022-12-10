@@ -23,7 +23,23 @@ const router = createRouter({
           path: "links",
           name: "links",
           component: () => import("../components/dashboard/Links.vue"),
+          children: [
+            {
+              path: "",
+              name: "linksHome",
+              component: () => import("../components/dashboard/ListLink.vue"),
+            }, {
+              path: ":id",
+              name: "detailLink",
+              component: () => import("../components/dashboard/DetailLink.vue"),
+            }
+          ]
         },
+        // {
+        //   path: ":id",
+        //   name: "detailLink",
+        //   component: () => import("../components/dashboard/DetailLink.vue"),
+        // },
         {
           path: "settings",
           name: "settings",
