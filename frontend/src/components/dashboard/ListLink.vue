@@ -19,7 +19,11 @@
             <button
               @click="
                 use_custom
-                  ? app.newLink(app.links.link, app.links.custom_link, use_custom)
+                  ? app.newLink(
+                      app.links.link,
+                      app.links.custom_link,
+                      use_custom
+                    )
                   : app.newLink(app.links.link)
               "
               type="submit"
@@ -47,7 +51,10 @@
               </span>
             </p>
           </div>
-          <div v-if="use_custom == true" class="flex flex-row w-2/3 p-5 -mt-8 rounded-lg">
+          <div
+            v-if="use_custom == true"
+            class="flex flex-row w-2/3 p-5 -mt-8 rounded-lg"
+          >
             <div
               class="self-center text-lg basis-1/12 bg-neutral-700 p-1.5 rounded-l-lg text-center font-bold text-yellow-200"
             >
@@ -71,13 +78,13 @@
         <div v-for="link in app.links.all_links" :key="link.id">
           <div class="w-2/3 p-5 rounded-lg bg-neutral-800">
             <div class="relative flex">
-              <p
-                @click="app.visitUrl(link.path)"
+              <a
+                :href="`http://s.it/${link.path}`"
                 target="_blank"
                 class="text-2xl font-medium text-yellow-200 cursor-pointer hover:underline"
               >
                 {{ `s.it/${link.path}` }}
-              </p>
+              </a>
               <Icon
                 icon="carbon:copy"
                 width="20"
@@ -112,12 +119,13 @@
                 ></Icon>
               </div>
             </div>
-            <p
-              @click="openLink(link.url)"
+            <a
+              :href="link.url"
+              target="_blank"
               class="cursor-pointer text-neutral-400 hover:underline"
             >
               {{ link.url }}
-            </p>
+            </a>
             <hr class="mt-1" />
             <div class="relative flex w-full mt-2">
               <div class="flex items-center space-x-1">
@@ -179,9 +187,6 @@ export default {
     Icon,
     PopupMsg,
   },
-  //   created() {
-  //     this.app.getLinks();
-  //   },
   setup() {
     const view = useView();
     const app = useApp();

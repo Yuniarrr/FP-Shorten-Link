@@ -28,18 +28,14 @@ const router = createRouter({
               path: "",
               name: "linksHome",
               component: () => import("../components/dashboard/ListLink.vue"),
-            }, {
+            },
+            {
               path: ":id",
               name: "detailLink",
               component: () => import("../components/dashboard/DetailLink.vue"),
-            }
-          ]
+            },
+          ],
         },
-        // {
-        //   path: ":id",
-        //   name: "detailLink",
-        //   component: () => import("../components/dashboard/DetailLink.vue"),
-        // },
         {
           path: "settings",
           name: "settings",

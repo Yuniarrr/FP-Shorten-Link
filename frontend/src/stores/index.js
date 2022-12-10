@@ -34,6 +34,7 @@ export const useApp = defineStore({
       total_monthly: [],
       links: [],
     },
+    chartDataPerLink: [],
     chartDataDaily: {
       labels: [
         dayjs().subtract(6, "day").format("DD/MM"),
@@ -206,11 +207,11 @@ export const useApp = defineStore({
           .then((res) => {
             if (res.data.result.url) {
               if (res.data.result.url.startsWith("http")) {
-                // window.location.href = res.data.result.url;
-                window.open(res.data.result.url, "_blank");
+                window.location.href = res.data.result.url;
+                // window.open(res.data.result.url, "_blank");
               } else {
-                // window.location.href = "http://" + res.data.result.url;
-                window.open("http://" + res.data.result.url, "_blank");
+                window.location.href = "http://" + res.data.result.url;
+                // window.open("http://" + res.data.result.url, "_blank");
               }
             }
           })
@@ -327,20 +328,72 @@ export const useApp = defineStore({
             monthly: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             total: 0,
           });
+          this.chartDataPerLink.push({
+            id: link.id,
+            daily: {
+              labels: [
+                dayjs().subtract(6, "day").format("DD MMM"),
+                dayjs().subtract(5, "day").format("DD MMM"),
+                dayjs().subtract(4, "day").format("DD MMM"),
+                dayjs().subtract(3, "day").format("DD MMM"),
+                dayjs().subtract(2, "day").format("DD MMM"),
+                dayjs().subtract(1, "day").format("DD MMM"),
+                dayjs().format("DD MMM"),
+              ],
+              datasets: [
+                {
+                  label: "Daily Visitor",
+                  backgroundColor: "#2dd4bf",
+                  data: [0, 0, 0, 0, 0, 0, 0],
+                },
+              ],
+            },
+            monthly: {
+              labels: [
+                dayjs().subtract(11, "month").format("MMM"),
+                dayjs().subtract(10, "month").format("MMM"),
+                dayjs().subtract(9, "month").format("MMM"),
+                dayjs().subtract(8, "month").format("MMM"),
+                dayjs().subtract(7, "month").format("MMM"),
+                dayjs().subtract(6, "month").format("MMM"),
+                dayjs().subtract(5, "month").format("MMM"),
+                dayjs().subtract(4, "month").format("MMM"),
+                dayjs().subtract(3, "month").format("MMM"),
+                dayjs().subtract(2, "month").format("MMM"),
+                dayjs().subtract(1, "month").format("MMM"),
+                dayjs().format("MMM"),
+              ],
+              datasets: [
+                {
+                  label: "Monthly Visitor",
+                  backgroundColor: "#2dd4bf",
+                  data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                },
+              ],
+            },
+          });
         });
-  
+
         await db
           .collection("logs")
           .where("link_id", "in", links_id)
           .onSnapshot((querySnapshot) => {
             this.statistics.total_daily = [0, 0, 0, 0, 0, 0, 0];
-            this.statistics.total_monthly = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+            this.statistics.total_monthly = [
+              0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            ];
             this.statistics.total_visitor = 0;
+            this.statistics.links.forEach((link) => {
+              link.daily = [0, 0, 0, 0, 0, 0, 0];
+              link.monthly = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+              link.total = 0;
+            });
             querySnapshot.forEach((doc) => {
               this.statistics.links.find(
                 (l) => l.id === doc.data().link_id
               ).total += 1;
               this.statistics.total_visitor += 1;
+
               for (let i = 0; i < 7; i++) {
                 if (
                   dayjs(doc.data().timestamp).isSame(
@@ -351,11 +404,17 @@ export const useApp = defineStore({
                   this.statistics.links.find(
                     (l) => l.id === doc.data().link_id
                   ).daily[i] += 1;
+                  this.chartDataPerLink.find(
+                    (l) => l.id === doc.data().link_id
+                  ).daily.datasets[0].data[6 - i] = this.statistics.links.find(
+                    (l) => l.id === doc.data().link_id
+                  ).daily[i];
                   this.statistics.total_daily[6 - i] += 1;
                   this.chartDataDaily.datasets[0].data[6 - i] =
                     this.statistics.total_daily[6 - i];
                 }
               }
+
               for (let i = 0; i < 12; i++) {
                 if (
                   dayjs(doc.data().timestamp).isSame(
@@ -366,15 +425,21 @@ export const useApp = defineStore({
                   this.statistics.links.find(
                     (l) => l.id === doc.data().link_id
                   ).monthly[i] += 1;
+                  this.chartDataPerLink.find(
+                    (l) => l.id === doc.data().link_id
+                  ).monthly.datasets[0].data[11 - i] =
+                    this.statistics.links.find(
+                      (l) => l.id === doc.data().link_id
+                    ).monthly[i];
+                  // console.log(this.chartDataPerLink.find((l) => l.id === doc.data().link_id).monthly.datasets[0]);
                   this.statistics.total_monthly[11 - i] += 1;
                   this.chartDataMonthly.datasets[0].data[11 - i] =
                     this.statistics.total_monthly[11 - i];
                 }
               }
             });
-            console.log("chart", this.chartDataDaily.datasets);
           });
-  
+
         this.statistics.total_links = this.links.all_links.length;
       } catch (error) {
         console.log(error);

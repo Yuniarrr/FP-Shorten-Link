@@ -1,5 +1,7 @@
 <template>
-  <div class="w-full py-6 ml-24 mr-5 rounded-lg mb-9 my-7 bg-neutral-900 px-7 h-fit">
+  <div
+    class="w-full py-6 ml-24 mr-5 rounded-lg mb-9 my-7 bg-neutral-900 px-7 h-fit"
+  >
     <h1 class="text-4xl font-bold text-neutral-50">Dashboard</h1>
 
     <div class="my-2">
@@ -94,13 +96,15 @@
           <p class="text-sm font-bold text-slate-400">MONTHLY VISITED</p>
           <Icon
             :icon="
-              app.statistics.total_monthly[11] > app.statistics.total_monthly[10]
+              app.statistics.total_monthly[11] >
+              app.statistics.total_monthly[10]
                 ? 'material-symbols:keyboard-double-arrow-up-rounded'
                 : 'material-symbols:keyboard-double-arrow-down-rounded'
             "
             width="23"
             :color="
-              app.statistics.total_monthly[11] > app.statistics.total_monthly[10]
+              app.statistics.total_monthly[11] >
+              app.statistics.total_monthly[10]
                 ? '#31c48d'
                 : '#ff4a37'
             "
@@ -125,7 +129,9 @@
     <div class="grid grid-cols-8 gap-3">
       <div class="col-span-3 bg-neutral-800 rounded-md">
         <div class="border-b-2 border-b-neutral-600">
-          <p class="text-lg my-2 ml-5 font-bold text-neutral-50">Daily Visitor</p>
+          <p class="text-lg my-2 ml-5 font-bold text-neutral-50">
+            Daily Visitor
+          </p>
         </div>
         <div class="w-full">
           <Line
@@ -136,7 +142,9 @@
       </div>
       <div class="col-span-3 bg-neutral-800 rounded-md">
         <div class="border-b-2 border-b-neutral-600">
-          <p class="text-lg my-2 ml-5 font-bold text-neutral-50">Monthly Visitor</p>
+          <p class="text-lg my-2 ml-5 font-bold text-neutral-50">
+            Monthly Visitor
+          </p>
         </div>
         <div class="w-full">
           <Line
@@ -147,7 +155,9 @@
       </div>
       <div class="col-span-2 bg-neutral-800 rounded-md">
         <div class="border-b-2 border-b-neutral-600">
-          <p class="text-lg my-2 ml-5 font-bold text-neutral-50">Top Visited Links</p>
+          <p class="text-lg my-2 ml-5 font-bold text-neutral-50">
+            Top Visited Links
+          </p>
         </div>
         <div class="flex flex-col mx-5 my-3 gap-y-2">
           <div class="flex lg:flex-row xl:flex-row md:flex-col">
