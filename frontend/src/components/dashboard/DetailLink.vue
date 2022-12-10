@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="w-full py-6 ml-24 mr-5 rounded-lg mb-9 my-7 bg-neutral-900 px-7 h-fit"
-  >
+  <div class="w-full py-6 ml-24 mr-5 rounded-lg mb-9 my-7 bg-neutral-900 px-7 h-fit">
     <div class="flex flex-row gap-x-6">
       <div
         class="flex items-center justify-center w-10 h-10 p-1 rounded-lg cursor-pointer bg-neutral-800 text-neutral-50"
@@ -26,26 +24,22 @@
         <div>
           <a
             :href="`http://s.it/${
-              app.links.all_links.find(
-                (link) => link.id == this.$route.params.id
-              ) === undefined
+              app.links.all_links.find((link) => link.id == this.$route.params.id) ===
+              undefined
                 ? ''
-                : app.links.all_links.find(
-                    (link) => link.id == this.$route.params.id
-                  ).path
+                : app.links.all_links.find((link) => link.id == this.$route.params.id)
+                    .path
             }`"
             target="_blank"
             class="my-2 text-3xl font-semibold hover:text-yellow-200 cursor-pointer hover:underline"
           >
             {{
               `s.it/${
-                app.links.all_links.find(
-                  (link) => link.id == this.$route.params.id
-                ) === undefined
+                app.links.all_links.find((link) => link.id == this.$route.params.id) ===
+                undefined
                   ? ""
-                  : app.links.all_links.find(
-                      (link) => link.id == this.$route.params.id
-                    ).path
+                  : app.links.all_links.find((link) => link.id == this.$route.params.id)
+                      .path
               }`
             }}
           </a>
@@ -64,13 +58,11 @@
           <div>
             <p class="my-2 text-4xl font-semibold">
               {{
-                app.statistics.links.find(
-                  (link) => link.id == this.$route.params.id
-                ) === undefined
+                app.statistics.links.find((link) => link.id == this.$route.params.id) ===
+                undefined
                   ? ""
-                  : app.statistics.links.find(
-                      (link) => link.id == this.$route.params.id
-                    ).total
+                  : app.statistics.links.find((link) => link.id == this.$route.params.id)
+                      .total
               }}
             </p>
           </div>
@@ -99,13 +91,11 @@
           <div>
             <p class="my-2 text-4xl font-semibold">
               {{
-                app.statistics.links.find(
-                  (link) => link.id == this.$route.params.id
-                ) === undefined
+                app.statistics.links.find((link) => link.id == this.$route.params.id) ===
+                undefined
                   ? ""
-                  : app.statistics.links.find(
-                      (link) => link.id == this.$route.params.id
-                    ).daily[0]
+                  : app.statistics.links.find((link) => link.id == this.$route.params.id)
+                      .daily[0]
               }}
             </p>
           </div>
@@ -134,13 +124,11 @@
           <div>
             <p class="my-2 text-4xl font-semibold">
               {{
-                app.statistics.links.find(
-                  (link) => link.id == this.$route.params.id
-                ) === undefined
+                app.statistics.links.find((link) => link.id == this.$route.params.id) ===
+                undefined
                   ? ""
-                  : app.statistics.links.find(
-                      (link) => link.id == this.$route.params.id
-                    ).monthly[0]
+                  : app.statistics.links.find((link) => link.id == this.$route.params.id)
+                      .monthly[0]
               }}
             </p>
           </div>
@@ -157,20 +145,16 @@
     <div class="grid grid-cols-8 gap-3">
       <div class="col-span-4 bg-neutral-800 rounded-md">
         <div class="border-b-2 border-b-neutral-600">
-          <p class="text-lg my-2 ml-5 font-bold text-neutral-50">
-            Daily Visitor
-          </p>
+          <p class="text-lg my-2 ml-5 font-bold text-neutral-50">Daily Visitor</p>
         </div>
         <div class="w-full">
           <Line
             :chart-data="
-              app.chartDataPerLink.find(
-                (link) => link.id === this.$route.params.id
-              ) === undefined
+              app.chartDataPerLink.find((link) => link.id === this.$route.params.id) ===
+              undefined
                 ? chartDataDaily
-                : app.chartDataPerLink.find(
-                    (link) => link.id === this.$route.params.id
-                  ).daily
+                : app.chartDataPerLink.find((link) => link.id === this.$route.params.id)
+                    .daily
             "
             class="w-full p-3 rounded-lg bg-neutral-800"
           />
@@ -178,45 +162,21 @@
       </div>
       <div class="col-span-4 bg-neutral-800 rounded-md">
         <div class="border-b-2 border-b-neutral-600">
-          <p class="text-lg my-2 ml-5 font-bold text-neutral-50">
-            Monthly Visitor
-          </p>
+          <p class="text-lg my-2 ml-5 font-bold text-neutral-50">Monthly Visitor</p>
         </div>
         <div class="w-full">
           <Line
             :chart-data="
-              app.chartDataPerLink.find(
-                (link) => link.id === this.$route.params.id
-              ) === undefined
+              app.chartDataPerLink.find((link) => link.id === this.$route.params.id) ===
+              undefined
                 ? chartDataMonthly
-                : app.chartDataPerLink.find(
-                    (link) => link.id === this.$route.params.id
-                  ).monthly
+                : app.chartDataPerLink.find((link) => link.id === this.$route.params.id)
+                    .monthly
             "
             class="w-full p-3 rounded-lg bg-neutral-800"
           />
         </div>
       </div>
-    </div>
-    <div>
-      {{ app.statistics.links.find((link) => link.id === id) }}
-    </div>
-    <div class="text-yellow-200">
-      <pre>
-        {{
-          app.chartDataPerLink.find(
-            (link) => link.id === this.$route.params.id
-          ) === undefined
-            ? chartDataDaily
-            : app.chartDataPerLink.find(
-                (link) => link.id === this.$route.params.id
-              )
-        }}
-      </pre>
-    </div>
-    <div>==============================</div>
-    <div>
-      {{ app.statistics }}
     </div>
   </div>
 </template>

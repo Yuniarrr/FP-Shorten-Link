@@ -19,11 +19,7 @@
             <button
               @click="
                 use_custom
-                  ? app.newLink(
-                      app.links.link,
-                      app.links.custom_link,
-                      use_custom
-                    )
+                  ? app.newLink(app.links.link, app.links.custom_link, use_custom)
                   : app.newLink(app.links.link)
               "
               type="submit"
@@ -51,10 +47,7 @@
               </span>
             </p>
           </div>
-          <div
-            v-if="use_custom == true"
-            class="flex flex-row w-2/3 p-5 -mt-8 rounded-lg"
-          >
+          <div v-if="use_custom == true" class="flex flex-row w-2/3 p-5 -mt-8 rounded-lg">
             <div
               class="self-center text-lg basis-1/12 bg-neutral-700 p-1.5 rounded-l-lg text-center font-bold text-yellow-200"
             >
@@ -140,15 +133,6 @@
               </div>
               <div class="absolute right-0">
                 <div class="flex items-center space-x-2">
-                  <div
-                    class="p-1 rounded-md cursor-pointer bg-neutral-700 h-7 hover:bg-neutral-600"
-                  >
-                    <Icon
-                      icon="material-symbols:lock-outline"
-                      width="20"
-                      class="text-neutral-50"
-                    ></Icon>
-                  </div>
                   <div
                     @click="this.$router.push(`/dashboard/links/${link.id}`)"
                     class="bg-neutral-700 px-1.5 h-7 rounded-md flex items-center cursor-pointer hover:bg-neutral-600"
