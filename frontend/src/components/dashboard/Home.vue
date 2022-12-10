@@ -67,7 +67,7 @@
         </div>
         <div class="grid grid-cols-2">
           <div>
-            <p class="my-2 text-4xl font-semibold">{{ app.statistics.total_daily }}</p>
+            <p class="my-2 text-4xl font-semibold">{{ app.statistics.total_daily[6] }}</p>
             <p class="font-thin underline cursor-pointer">View All Links</p>
           </div>
           <Icon
@@ -89,7 +89,7 @@
         </div>
         <div class="grid grid-cols-2">
           <div>
-            <p class="my-2 text-4xl font-semibold">{{ app.statistics.total_monthly }}</p>
+            <p class="my-2 text-4xl font-semibold">{{ app.statistics.total_monthly[11] }}</p>
             <p class="font-thin underline cursor-pointer">View All Links</p>
           </div>
           <Icon
@@ -102,19 +102,30 @@
       </div>
     </div>
 
-    <div class="grid grid-cols-5 gap-3">
-      <div class="col-span-4 bg-neutral-800 rounded-md">
+    <div class="grid grid-cols-8 gap-3">
+      <div class="col-span-3 bg-neutral-800 rounded-md">
         <div class="border-b-2 border-b-neutral-600">
-          <p class="text-lg my-2 ml-5 font-bold text-neutral-50">Graphics</p>
+          <p class="text-lg my-2 ml-5 font-bold text-neutral-50">Daily Visitor</p>
         </div>
         <div class="w-full">
           <Line
-            :chart-data="chartData"
-            class="w-full h-80 p-3 rounded-lg bg-neutral-800"
+            :chart-data="app.chartDataDaily"
+            class="w-full p-3 rounded-lg bg-neutral-800"
           />
         </div>
       </div>
-      <div class="col-span-1 bg-neutral-800 rounded-md">
+      <div class="col-span-3 bg-neutral-800 rounded-md">
+        <div class="border-b-2 border-b-neutral-600">
+          <p class="text-lg my-2 ml-5 font-bold text-neutral-50">Monthly Visitor</p>
+        </div>
+        <div class="w-full">
+          <Line
+            :chart-data="app.chartDataMonthly"
+            class="w-full p-3 rounded-lg bg-neutral-800"
+          />
+        </div>
+      </div>
+      <div class="col-span-2 bg-neutral-800 rounded-md">
         <div class="border-b-2 border-b-neutral-600">
           <p class="text-lg my-2 ml-5 font-bold text-neutral-50">Top Visited Links</p>
         </div>
@@ -139,33 +150,11 @@
         </div>
       </div>
     </div>
-
-    <!-- <div class="grid w-full grid-cols-2">
-      <div class="grid w-full grid-cols-2 grid-rows-4 gap-6 mt-7">
-        <div class="px-5 pt-3 pb-5 mr-3 rounded-lg bg-neutral-800 w-60">
-          <h1 class="text-xl font-normal">Total Links</h1>
-          <h1 class="text-6xl font-bold text-green-400">27</h1>
-        </div>
-        <div class="px-5 pt-3 pb-5 mr-3 rounded-lg bg-neutral-800 w-60">
-          <h1 class="text-xl font-normal">Visitor</h1>
-          <h1 class="text-6xl font-bold text-green-400">1,029</h1>
-        </div>
-        <div class="px-5 pt-3 pb-5 mr-3 rounded-lg bg-neutral-800 w-60">
-          <h1 class="text-xl font-normal">Unique Visitor</h1>
-          <h1 class="text-6xl font-bold text-green-400">762</h1>
-        </div>
-      </div>
-      <div class="mt-7">
-        <Line
-          :chart-data="chartData"
-          class="w-full h-full p-3 rounded-lg bg-neutral-800"
-        />
-      </div>
-    </div> -->
   </div>
 </template>
 <script>
 import { Line } from "vue-chartjs";
+import dayjs from "dayjs";
 import {
   Chart as ChartJS,
   Title,
@@ -190,44 +179,6 @@ ChartJS.register(
 );
 
 export default {
-  data() {
-    return {
-      chartData: {
-        labels: [
-          "January",
-          "February",
-          "March",
-          "April",
-          "Mei",
-          "May",
-          "Jun",
-          "Jul",
-          "Aug",
-          "Sep",
-          "Oct",
-          "Nov",
-          "Dec",
-        ],
-        datasets: [
-          {
-            label: "Data One",
-            backgroundColor: "#2dd4bf",
-            data: [0, 20, 12],
-          },
-          {
-            label: "Data Two",
-            backgroundColor: "#fbbf24",
-            data: [0, 20, 30],
-          },
-          {
-            label: "Data Three",
-            backgroundColor: "#3b82f6",
-            data: [0, 10, 40],
-          },
-        ],
-      },
-    };
-  },
   setup() {
     const view = useView();
     const app = useApp();

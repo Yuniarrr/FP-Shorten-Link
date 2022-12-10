@@ -34,13 +34,54 @@ export const useApp = defineStore({
     statistics: {
       total_links: 0,
       total_visitor: 0,
-      total_daily: 0,
-      total_monthly: 0,
+      total_daily: [],
+      total_monthly: [],
       links: []
     },
+    chartDataDaily: {
+      labels: [
+        dayjs().subtract(6, "day").format("DD/MM"),
+        dayjs().subtract(5, "day").format("DD/MM"),
+        dayjs().subtract(4, "day").format("DD/MM"),
+        dayjs().subtract(3, "day").format("DD/MM"),
+        dayjs().subtract(2, "day").format("DD/MM"),
+        dayjs().subtract(1, "day").format("DD/MM"),
+        dayjs().format("DD/MM"),
+      ],
+      datasets: [
+        {
+          label: "Daily Visitor",
+          backgroundColor: "#2dd4bf",
+          data: [0, 0, 0, 0, 0, 0, 0],
+        },
+      ],
+    },
+    chartDataMonthly: {
+      labels: [
+        dayjs().subtract(11, "month").format("MMM"),
+        dayjs().subtract(10, "month").format("MMM"),
+        dayjs().subtract(9, "month").format("MMM"),
+        dayjs().subtract(8, "month").format("MMM"),
+        dayjs().subtract(7, "month").format("MMM"),
+        dayjs().subtract(6, "month").format("MMM"),
+        dayjs().subtract(5, "month").format("MMM"),
+        dayjs().subtract(4, "month").format("MMM"),
+        dayjs().subtract(3, "month").format("MMM"),
+        dayjs().subtract(2, "month").format("MMM"),
+        dayjs().subtract(1, "month").format("MMM"),
+        dayjs().format("MMM"),
+      ],
+      datasets: [
+        {
+          label: "Monthly Visitor",
+          backgroundColor: "#f5bc38",
+          data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        },
+      ],
+    },
     logs: [],
-      edit: false,
-      delete: false
+    edit: false,
+    delete: false
   }),
   actions: {
     async login(email, password) {
@@ -245,31 +286,41 @@ export const useApp = defineStore({
         links_id.push(link.id);
         this.statistics.links.push({
           id: link.id,
-          daily: 0,
-          monthly: 0,
-          total: 0
+          daily: [0, 0, 0, 0, 0, 0, 0],
+          monthly: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          total: 0,
         });
       });
 
       await db.collection("logs").where("link_id", "in", links_id).onSnapshot((querySnapshot) => {
-        this.statistics.total_daily = 0;
-        this.statistics.total_monthly = 0;
+        this.statistics.total_daily = [0, 0, 0, 0, 0, 0, 0];
+        this.statistics.total_monthly = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
         this.statistics.total_visitor = 0;
         querySnapshot.forEach((doc) => {
           this.statistics.links.find((l) => l.id === doc.data().link_id).total += 1;
           this.statistics.total_visitor += 1;
-          if(dayjs(doc.data().timestamp).isSame(dayjs(), 'month')) {
-            this.statistics.links.find((l) => l.id === doc.data().link_id).monthly += 1;
-            this.statistics.total_monthly += 1;
+          for(let i = 0; i < 7; i++){
+            if(dayjs(doc.data().timestamp).isSame(dayjs().subtract(i, "day"), 'day')) {
+              this.statistics.links.find((l) => l.id === doc.data().link_id).daily[i] += 1;
+              this.statistics.total_daily[6-i] += 1;
+              this.chartDataDaily.datasets[0].data[6-i] = this.statistics.total_daily[6-i];
+            }
           }
-          if(dayjs(doc.data().timestamp).isSame(dayjs(), 'day')) {
-            this.statistics.links.find((l) => l.id === doc.data().link_id).daily += 1;
-            this.statistics.total_daily += 1;
+          for(let i = 0; i < 12; i++){
+            if(dayjs(doc.data().timestamp).isSame(dayjs().subtract(i, "month"), 'month')) {
+              this.statistics.links.find((l) => l.id === doc.data().link_id).monthly[i] += 1;
+              this.statistics.total_monthly[11-i] += 1;
+              this.chartDataMonthly.datasets[0].data[11-i] = this.statistics.total_monthly[11-i];
+            }
           }
         });
+        console.log('chart', this.chartDataDaily.datasets)
       });
 
       this.statistics.total_links = this.links.all_links.length;
+    },
+    async getGraphicalStatistics() {
+
     },
     async editLink(id) {
       this.loading = true;

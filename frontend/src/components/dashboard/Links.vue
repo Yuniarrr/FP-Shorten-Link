@@ -34,7 +34,7 @@
             </p>
           </div>
           <div v-if="use_custom == true" class="flex flex-row w-2/3 p-5 -mt-8 rounded-lg">
-            <div class="self-center text-lg font-medium basis-1/12">s.it/</div>
+            <div class="self-center text-lg basis-1/12 bg-neutral-700 p-1.5 rounded-l-lg text-center font-bold text-yellow-200">s.it/</div>
             <div class="basis-11/12 bg-neutral-800">
               <input
                 type="url"
@@ -53,9 +53,9 @@
         <div v-for="link in app.links.all_links" :key="link.id">
           <div class="w-2/3 p-5 rounded-lg bg-neutral-800">
             <div class="relative flex">
-              <h1 class="text-2xl font-medium text-yellow-200 cursor-pointer hover:underline">
+              <a :href="'http://s.it/'+link.path" target="_blank" class="text-2xl font-medium text-yellow-200 cursor-pointer hover:underline">
                 {{ `s.it/${link.path}` }}
-              </h1>
+              </a>
               <Icon
                 icon="carbon:copy"
                 width="20"
