@@ -1,38 +1,32 @@
 <template>
   <div class="w-full py-6 ml-24 mr-5 rounded-lg mb-9 my-7 bg-neutral-900 px-7 h-fit">
-    <h1 class="text-4xl font-bold text-neutral-50">Dashboard</h1>
-
-    <div class="my-2">
-      <p class="text-lg font-light">{{ sayGretting() }}, Yuni</p>
-      <p class="font-light text-slate-400">
-        Here's what's happening with your links today.
-      </p>
+    <div class="flex flex-row gap-x-6">
+      <div
+        class="flex items-center justify-center w-10 h-10 p-1 rounded-lg cursor-pointer bg-neutral-800 text-neutral-50"
+        @click="this.$router.push('/dashboard/links')"
+      >
+        <Icon
+          icon="ic:round-arrow-back"
+          class="self-center cursor-pointer hover:text-yellow-200"
+          width="30"
+        />
+      </div>
+      <h1 class="text-4xl font-bold text-neutral-50">Detail Link</h1>
     </div>
 
     <div
-      class="flex flex-row flex-wrap 2xl:justify-between xl:justify-between lg:justify-between md:justify-center sm:justify-center items-center gap-3 w-full my-5"
+      class="flex flex-row flex-wrap 2xl:justify-between xl:justify-between lg:justify-between md:justify-center sm:justify-center md:items-center sm:items-center items-center gap-3 w-full my-5"
     >
-      <div class="p-3 rounded-md bg-neutral-800 w-64">
+      <div class="p-3 rounded-md bg-neutral-800 w-64 h-full">
         <div class="flex justify-between">
-          <p class="text-sm font-bold text-slate-400">TOTAL LINKS</p>
-          <Icon
-            icon="material-symbols:keyboard-double-arrow-up-rounded"
-            width="23"
-            color="#31c48d"
-          />
+          <p class="text-sm font-bold text-slate-400">LINKS</p>
         </div>
-        <div class="grid grid-cols-2">
-          <div>
-            <p class="my-2 text-4xl font-semibold">
-              {{ app.statistics.total_links }}
-            </p>
-          </div>
-          <Icon
-            class="p-2.5 bg-green-900 rounded-md place-self-end"
-            icon="ph:link-simple-bold"
-            color="#31c48d"
-            width="40"
-          />
+        <div @click="app.visitUrl(path)">
+          <p
+            class="my-2 text-3xl font-semibold hover:text-yellow-200 cursor-pointer hover:underline"
+          >
+            {{ `s.it/${path}` }}
+          </p>
         </div>
       </div>
       <div class="p-3 rounded-md bg-neutral-800 w-64">
@@ -47,7 +41,7 @@
         <div class="grid grid-cols-2">
           <div>
             <p class="my-2 text-4xl font-semibold">
-              {{ app.statistics.total_visitor }}
+              {{ total }}
             </p>
           </div>
           <Icon
@@ -63,22 +57,18 @@
           <p class="text-sm font-bold text-slate-400">DAILY VISITED</p>
           <Icon
             :icon="
-              app.statistics.total_daily[6] > app.statistics.total_daily[5]
+              daily > next_daily
                 ? 'material-symbols:keyboard-double-arrow-up-rounded'
                 : 'material-symbols:keyboard-double-arrow-down-rounded'
             "
             width="23"
-            :color="
-              app.statistics.total_daily[6] > app.statistics.total_daily[5]
-                ? '#31c48d'
-                : '#ff4a37'
-            "
+            :color="daily > next_daily ? '#31c48d' : '#ff4a37'"
           />
         </div>
         <div class="grid grid-cols-2">
           <div>
             <p class="my-2 text-4xl font-semibold">
-              {{ app.statistics.total_daily[6] }}
+              {{ daily }}
             </p>
           </div>
           <Icon
@@ -94,22 +84,18 @@
           <p class="text-sm font-bold text-slate-400">MONTHLY VISITED</p>
           <Icon
             :icon="
-              app.statistics.total_monthly[11] > app.statistics.total_monthly[10]
+              monthly > next_monthly
                 ? 'material-symbols:keyboard-double-arrow-up-rounded'
                 : 'material-symbols:keyboard-double-arrow-down-rounded'
             "
             width="23"
-            :color="
-              app.statistics.total_monthly[11] > app.statistics.total_monthly[10]
-                ? '#31c48d'
-                : '#ff4a37'
-            "
+            :color="monthly > next_monthly ? '#31c48d' : '#ff4a37'"
           />
         </div>
         <div class="grid grid-cols-2">
           <div>
             <p class="my-2 text-4xl font-semibold">
-              {{ app.statistics.total_monthly[11] }}
+              {{ monthly }}
             </p>
           </div>
           <Icon
@@ -123,7 +109,7 @@
     </div>
 
     <div class="grid grid-cols-8 gap-3">
-      <div class="col-span-3 bg-neutral-800 rounded-md">
+      <div class="col-span-4 bg-neutral-800 rounded-md">
         <div class="border-b-2 border-b-neutral-600">
           <p class="text-lg my-2 ml-5 font-bold text-neutral-50">Daily Visitor</p>
         </div>
@@ -134,7 +120,7 @@
           />
         </div>
       </div>
-      <div class="col-span-3 bg-neutral-800 rounded-md">
+      <div class="col-span-4 bg-neutral-800 rounded-md">
         <div class="border-b-2 border-b-neutral-600">
           <p class="text-lg my-2 ml-5 font-bold text-neutral-50">Monthly Visitor</p>
         </div>
@@ -145,30 +131,13 @@
           />
         </div>
       </div>
-      <div class="col-span-2 bg-neutral-800 rounded-md">
-        <div class="border-b-2 border-b-neutral-600">
-          <p class="text-lg my-2 ml-5 font-bold text-neutral-50">Top Visited Links</p>
-        </div>
-        <div class="flex flex-col mx-5 my-3 gap-y-2">
-          <div class="flex lg:flex-row xl:flex-row md:flex-col">
-            <p class="font-light text-xl">1. s.it/B3uz4</p>
-            <Icon
-              v-if="view.copy == false"
-              icon="carbon:copy"
-              width="20"
-              class="cursor-pointer hover:text-yellow-200 lg:ml-2 md:ml-4 md:mt-2"
-              @click="view.copyURL(`s.it/B3uz4`)"
-            ></Icon>
-            <Icon
-              v-if="view.copy == true"
-              icon="material-symbols:check-small-rounded"
-              color="green"
-              class="cursor-pointer lg:ml-2 md:ml-4 md:mt-2"
-              width="33"
-            />
-          </div>
-        </div>
-      </div>
+    </div>
+    <div>
+      {{ app.statistics.links.find((link) => link.id === id) }}
+    </div>
+    <div>==============================</div>
+    <div>
+      {{ app.statistics }}
     </div>
   </div>
 </template>
@@ -200,6 +169,17 @@ ChartJS.register(
 );
 
 export default {
+  data() {
+    return {
+      id: "",
+      path: "",
+      daily: "",
+      monthly: "",
+      total: "",
+      next_daily: "",
+      next_monthly: "",
+    };
+  },
   setup() {
     const view = useView();
     const app = useApp();
@@ -208,6 +188,23 @@ export default {
       view,
     };
   },
+  beforeMount() {
+    this.id = this.$router.currentRoute.value.params.id;
+    if (this.app.links.all_links.find((link) => link.id === this.id)) {
+      this.path = this.app.links.all_links.find((link) => link.id === this.id).path;
+      this.total = this.app.statistics.links.find((link) => link.id === this.id).total;
+      this.daily = this.app.statistics.links.find((link) => link.id === this.id).daily[0];
+      this.monthly = this.app.statistics.links.find(
+        (link) => link.id === this.id
+      ).monthly[0];
+      this.next_daily = this.app.statistics.links.find(
+        (link) => link.id === this.id
+      ).daily[1];
+      this.next_monthly = this.app.statistics.links.find(
+        (link) => link.id === this.id
+      ).monthly[1];
+    }
+  },
   watch: {
     "app.links.all_links": {
       handler() {
@@ -215,22 +212,29 @@ export default {
       },
       deep: true,
     },
+    "app.statistics": {
+      handler() {
+        this.path = this.app.links.all_links.find((link) => link.id === this.id).path;
+        this.total = this.app.statistics.links.find((link) => link.id === this.id).total;
+        this.daily = this.app.statistics.links.find(
+          (link) => link.id === this.id
+        ).daily[0];
+        this.monthly = this.app.statistics.links.find(
+          (link) => link.id === this.id
+        ).monthly[0];
+        this.next_daily = this.app.statistics.links.find(
+          (link) => link.id === this.id
+        ).daily[1];
+        this.next_monthly = this.app.statistics.links.find(
+          (link) => link.id === this.id
+        ).monthly[1];
+      },
+      deep: true,
+    },
   },
   components: {
     Line,
     Icon,
-  },
-  methods: {
-    sayGretting() {
-      const hour = dayjs().hour();
-      if (hour >= 0 && hour < 12) {
-        return "Good Morning";
-      } else if (hour >= 12 && hour < 18) {
-        return "Good Afternoon";
-      } else {
-        return "Good Evening";
-      }
-    },
   },
 };
 </script>
