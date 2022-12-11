@@ -203,6 +203,34 @@ export const useApp = defineStore({
         this.loading = false;
       }
     },
+    async getUrl(path) {
+      this.loading = true;
+      try {
+        let status = false;
+        const url = await axios
+          .get(URL_API + "api/links", {
+            params: {
+              path
+            }
+          })
+          .then((res) => {
+            console.log(res.status);
+            if(res.status == 200) {
+              status = true;
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+        return status;
+      } catch (error) {
+        console.log(error);
+        this.error = error;
+        return false;
+      } finally {
+        this.loading = false;
+      }
+    },
     async visitUrl(path) {
       this.loading = true;
       try {

@@ -100,7 +100,6 @@
                 @click="(app.links.delete = true), (id = link.id)"
               >
                 <h1
-                  @click="app.deleteLink('2i8QcqgMeqMYu0NANVrc')"
                   class="text-sm font-semibold"
                 >
                   Delete

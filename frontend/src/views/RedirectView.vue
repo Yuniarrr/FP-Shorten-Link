@@ -37,6 +37,13 @@ export default {
       app,
     };
   },
+  beforeMount() {
+    this.app.getUrl(this.$route.params.pathLink)
+    .then((res) => {
+      if (!res) {
+        this.$router.push('/404');}
+    })
+  },
   created() {
     setTimeout(() => {
       this.app.visitUrl(this.$route.params.pathLink);
