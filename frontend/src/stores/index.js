@@ -10,6 +10,8 @@ export const useApp = defineStore({
   state: () => ({
     user: {
       logged_in: false,
+      wrong_password: false,
+      failed_login: false,
     },
     token: null,
     refreshToken: null,
@@ -91,12 +93,24 @@ export const useApp = defineStore({
             document.cookie = `session=${res.data.result.session}; max-age=${res.data.result.options.maxAge};`;
           })
           .catch((err) => {
-            console.log(err);
+            console.log(err.response.data.message);
+            this.user.failed_login = true;
+            setTimeout(() => {
+              this.user.failed_login = false;
+            }, 1000);
+            // if (
+            //   err.response.data.message.code === "auth/email-already-in-use"
+            // ) {
+            //   alert("Email already in use");
+            // }
           });
       } catch (error) {
         console.log(error);
         this.error = error;
       } finally {
+        if(this.user.failed_login == true) {
+          this.router.push("/login");
+        }
         this.loading = false;
         this.sessionCheck().then(
           this.router.push("/dashboard"),
@@ -106,7 +120,6 @@ export const useApp = defineStore({
     async register(email, password, cpassword) {
       this.loading = true;
       this.error = null;
-      console.log("register");
       try {
         const { data } = await axios
           .post(URL_API + "api/register", {
@@ -115,15 +128,17 @@ export const useApp = defineStore({
             cpassword,
           })
           .then((res) => {
-            console.log(res);
+            console.log(`res: ${res}`);
+            this.user.wrong_password = false;
           })
           .catch((error) => {
             // Todo: Handle error
             console.log(error.response.data.message);
-            if (
-              error.response.data.message.code === "auth/email-already-in-use"
-            ) {
-              alert("Email already in use");
+            if(error.response.data.message == "Passwords don't match") {
+              this.user.wrong_password = true;
+              setTimeout(() => {
+                this.user.wrong_password = false;
+              }, 1000);
             }
           });
         this.user = data.user;
@@ -133,7 +148,11 @@ export const useApp = defineStore({
         this.error = error;
       } finally {
         this.loading = false;
-        this.router.push("/login");
+        if (this.user.wrong_password == false) {
+          this.router.push("/login");
+        } else {
+          this.router.push("/register");
+        }
       }
     },
     async signOut() {

@@ -28,15 +28,23 @@
     </div>
     <div class="flex flex-col w-5/6 gap-y-1">
       <p class="ml-1 text-lg font-normal">Short Url</p>
-      <div class="flex flex-row">
-        <input
-          type="url"
-          class="w-full pl-12 border-0 rounded-lg bg-neutral-900 focus:outline-none focus:ring-0"
-          placeholder="Place your short-url here!"
-          autocomplete="off"
-          v-model="app.links.all_links.find((element) => element.id == id).path"
-        />
-        <p class="fixed z-20 self-center my-auto ml-3 font-semibold">s.it/</p>
+      <div class="flex flex-row rounded-lg w-full">
+        <div
+          class="self-center text-lg basis-1/6 bg-neutral-700 p-1.5 rounded-l-lg text-center font-bold text-yellow-200"
+        >
+          s.it/
+        </div>
+        <div class="basis-5/6 bg-neutral-800">
+          <input
+            type="url"
+            name="url"
+            id="url"
+            class="w-full border-0 rounded-r-lg bg-neutral-900 focus:outline-none focus:ring-0"
+            placeholder="Place your custom-link here!"
+            autocomplete="off"
+            v-model="app.links.all_links.find((element) => element.id == id).path"
+          />
+        </div>
       </div>
     </div>
     <button

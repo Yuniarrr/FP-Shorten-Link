@@ -3,7 +3,7 @@
     <h1 class="text-4xl font-bold text-neutral-50">Dashboard</h1>
 
     <div class="my-2">
-      <p class="text-lg font-light">{{ sayGretting() }}, Yuni</p>
+      <p class="text-lg font-light">{{ sayGretting() }}, {{ getMail() }}</p>
       <p class="font-light text-slate-400">
         Here's what's happening with your links today.
       </p>
@@ -174,15 +174,17 @@
                 "
               >
                 {{
-                  ` s.it/${
-                    app.links.all_links.find((l) => l.id == link.id).path
-                      ? app.links.all_links.find((l) => l.id == link.id).path
-                      : ""
-                  }`
+                  shortMsg(
+                    ` s.it/${
+                      app.links.all_links.find((l) => l.id == link.id).path
+                        ? app.links.all_links.find((l) => l.id == link.id).path
+                        : ""
+                    }`
+                  )
                 }}
               </span>
             </p>
-            <Icon
+            <!-- <Icon
               v-if="view.copy == false"
               icon="carbon:copy"
               width="20"
@@ -195,7 +197,7 @@
               color="green"
               class="cursor-pointer lg:ml-2 md:ml-4 md:mt-2"
               width="33"
-            />
+            /> -->
           </div>
         </div>
       </div>
@@ -261,8 +263,17 @@ export default {
         return "Good Evening";
       }
     },
-    orderFromBigger() {
-      this.app.statistics.links.sort((a, b) => b.total - a.total);
+    shortMsg(msg) {
+      if (msg.length > 20) {
+        return msg.substring(0, 20) + "...";
+      } else {
+        return msg;
+      }
+    },
+    getMail() {
+      const parseCookie = this.app.parseJwt(document.cookie);
+      let email = parseCookie.email;
+      return email;
     },
   },
 };
