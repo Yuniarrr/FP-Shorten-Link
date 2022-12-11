@@ -1,8 +1,5 @@
-import { ref, computed } from "vue";
 import { defineStore } from "pinia";
-import Swal from "sweetalert2";
 import axios from "axios";
-import { getFirestore, collection, onSnapshot } from "firebase/firestore";
 import { db } from "../config/firebase.config.js";
 import dayjs from "dayjs";
 
@@ -100,9 +97,10 @@ export const useApp = defineStore({
         console.log(error);
         this.error = error;
       } finally {
-        this.sessionCheck();
-        this.router.push("/dashboard");
         this.loading = false;
+        this.sessionCheck().then(
+          this.router.push("/dashboard"),
+        );
       }
     },
     async register(email, password, cpassword) {
@@ -135,13 +133,8 @@ export const useApp = defineStore({
         this.error = error;
       } finally {
         this.loading = false;
+        this.router.push("/login");
       }
-      this.router.push("/login");
-    },
-    async logout() {
-      this.user = null;
-      this.token = null;
-      this.refreshToken = null;
     },
     async signOut() {
       this.loading = true;
@@ -182,20 +175,31 @@ export const useApp = defineStore({
       }
     },
     async sessionCheck() {
-      // Todo: Check if token is valid
-      const session = document.cookie
-        .split("; ")
-        .find((row) => row.startsWith("session="))
-        ?.split("=")[1];
+      this.loading = true;
+      try {
+          const session = document.cookie
+          .split("; ")
+          .find((row) => row.startsWith("session="))
+          ?.split("=")[1];
 
-      console.log("session : " + session);
-
-      if (session) {
-        this.user.logged_in = true;
-        console.log("logged_in : " + this.user.logged_in);
-        return true;
+          if (session) {
+            await axios.get(URL_API + "api/auth", {
+              headers: {
+                "Authorization": "Bearer " + session
+              }
+            }).then((res) => {
+              if(res.status == 200) {
+                this.user.logged_in = true;
+                return true;
+              }
+            })
+          }
+          return false;
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.loading = false;
       }
-      return false;
     },
     async visitUrl(path) {
       this.loading = true;
@@ -448,7 +452,6 @@ export const useApp = defineStore({
         this.loading = false;
       }
     },
-    async getGraphicalStatistics() {},
     async editLink(id) {
       this.loading = true;
       try {

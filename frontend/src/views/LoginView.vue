@@ -113,16 +113,20 @@ export default {
   components: {
     Icon,
   },
-  beforeMount() {
-    if (this.app.user.logged_in) {
-      this.$router.push("/dashboard");
-    }
-  },
   setup() {
     const app = useApp();
     return {
       app,
     };
+  },
+  watch: {
+    "app.user.logged_in": {
+      handler() {
+        if (this.app.user.logged_in) {
+          this.$router.push("/dashboard");
+        }
+      },
+    }
   },
 };
 </script>

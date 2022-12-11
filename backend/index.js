@@ -17,8 +17,20 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(morgan('tiny'));
 
-app.get('/api', (req, res) => {
-    res.send('Hello World!');
+app.get('/api/auth', middleware.decodeToken, (req, res) => {
+    if(req.user) {
+        return res.send({
+            code: 200,
+            message: "Authentication successful",
+            result: {
+                user: req.user
+            }
+        })
+    }
+    return res.status(401).send({
+        code: 401,
+        message: "Error: Authentication failed"
+    })
 });
 
 app.post('/api/login', (req, res) => {

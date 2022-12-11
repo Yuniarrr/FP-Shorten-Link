@@ -26,7 +26,7 @@
         <div class="grid grid-cols-2">
           <div>
             <p class="my-2 text-4xl font-semibold">
-              {{ app.statistics.total_links }}
+              {{ app.statistics.total_links ? app.statistics.total_links : 0 }}
             </p>
           </div>
           <Icon
@@ -49,7 +49,7 @@
         <div class="grid grid-cols-2">
           <div>
             <p class="my-2 text-4xl font-semibold">
-              {{ app.statistics.total_visitor }}
+              {{ app.statistics.total_visitor ? app.statistics.total_visitor : 0 }}
             </p>
           </div>
           <Icon
@@ -80,7 +80,7 @@
         <div class="grid grid-cols-2">
           <div>
             <p class="my-2 text-4xl font-semibold">
-              {{ app.statistics.total_daily[6] }}
+              {{ app.statistics.total_daily[6] ? app.statistics.total_daily[6] : 0 }}
             </p>
           </div>
           <Icon
@@ -113,7 +113,7 @@
         <div class="grid grid-cols-2">
           <div>
             <p class="my-2 text-4xl font-semibold">
-              {{ app.statistics.total_monthly[11] }}
+              {{ app.statistics.total_monthly[11] ? app.statistics.total_monthly[11] : 0 }}
             </p>
           </div>
           <Icon

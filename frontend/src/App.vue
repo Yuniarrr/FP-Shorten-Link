@@ -1,6 +1,6 @@
 <template>
   <div class="top-0 bottom-0 left-0 right-0">
-    <RouterView />
+    <RouterView :class="app.loading ? 'hidden' : ''"/>
     <LoadingVue v-if="app.loading" />
   </div>
 </template>

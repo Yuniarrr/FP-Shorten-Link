@@ -3,8 +3,10 @@
     <!-- <EditMsg class="absolute top-1/2 left-1/2" /> -->
     <div class="flex w-full h-screen bg-black text-neutral-50">
       <!-- Sidebar -->
-      <Sidebar />
-      <RouterView />
+      <Sidebar :class="app.loading ? 'hidden' : ''"/>
+      <RouterView :class="app.loading ? 'hidden' : ''"/>
+      <Loading v-if="app.loading" />
+      
     </div>
   </div>
 </template>
@@ -14,20 +16,13 @@ import { Icon } from "@iconify/vue";
 import { useApp, useView } from "../stores/index.js";
 import AddToggle from "../components/AddToggle.vue";
 import Sidebar from "../components/dashboard/Sidebar.vue";
-// import NavDashboard from "../components/NavDashboard.vue";
 import HomeDashboard from "../components/dashboard/Home.vue";
-import EditMsg from "../components/EditMsg.vue";
-import { onMounted } from "@vue/runtime-core";
-// import EditMsg from "../components/EditMsg.vue";
+import Loading from "../components/Loading.vue";
 
 export default {
   setup() {
     const view = useView();
     const app = useApp();
-
-    if (app.user.logged_in === false) {
-      this.$router.push("/login");
-    }
 
     return {
       app,
@@ -39,10 +34,17 @@ export default {
     AddToggle,
     Sidebar,
     HomeDashboard,
-    // EditMsg,
+    Loading
   },
   beforeMount() {
-    this.app.getLinks();
+    if (this.app.user.logged_in === false) {
+      this.$router.push("/login");
+    }
+  },
+  beforeCreate() {
+    if (this.app.user.logged_in === true) {
+      this.app.getLinks();
+    }
   },
 };
 </script>
