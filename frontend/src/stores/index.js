@@ -11,6 +11,7 @@ export const useApp = defineStore({
     user: {
       logged_in: false,
       wrong_password: false,
+      failed_login: false,
     },
     token: null,
     refreshToken: null,
@@ -92,12 +93,24 @@ export const useApp = defineStore({
             document.cookie = `session=${res.data.result.session}; max-age=${res.data.result.options.maxAge};`;
           })
           .catch((err) => {
-            console.log(err);
+            console.log(err.response.data.message);
+            this.user.failed_login = true;
+            setTimeout(() => {
+              this.user.failed_login = false;
+            }, 1000);
+            // if (
+            //   err.response.data.message.code === "auth/email-already-in-use"
+            // ) {
+            //   alert("Email already in use");
+            // }
           });
       } catch (error) {
         console.log(error);
         this.error = error;
       } finally {
+        if(this.user.failed_login == true) {
+          this.router.push("/login");
+        }
         this.loading = false;
         this.sessionCheck().then(
           this.router.push("/dashboard"),
@@ -126,11 +139,6 @@ export const useApp = defineStore({
               setTimeout(() => {
                 this.user.wrong_password = false;
               }, 1000);
-            }
-            if (
-              error.response.data.message.code === "auth/email-already-in-use"
-            ) {
-              alert("Email already in use");
             }
           });
         this.user = data.user;
