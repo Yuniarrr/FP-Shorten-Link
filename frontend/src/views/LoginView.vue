@@ -119,6 +119,12 @@ export default {
       app,
     };
   },
+  beforeMount() {
+    this.app.sessionCheck();
+    if(this.app.user.logged_in) {
+      this.$router.push("/dashboard");
+    }
+  },
   watch: {
     "app.user.logged_in": {
       handler() {

@@ -137,7 +137,33 @@ app.post('/api/signout', middleware.decodeToken, (req, res) => {
             error
         })
     });
-})
+});
+
+app.get('/api/links', (req, res) => {
+    try {
+        console.log('req.query.path', req.query.path);
+        db.collection('links').where('path', '==', req.query.path).get()
+        .then((querySnapshot) => {
+            if(querySnapshot.empty) {
+                console.log('Link not found')
+                return res.status(404).send({
+                    code: 404,
+                    message: 'Link not found',
+                })
+            }
+            return res.send({
+                code: 200,
+                message: 'Link found',
+            })
+        });
+    } catch(err) {
+        return res.status(500).send({
+            code: 500,
+            message: 'Internal Server Error',
+            err
+        })
+    }
+});
 
 app.post('/api/links', (req, res) => {
     try {

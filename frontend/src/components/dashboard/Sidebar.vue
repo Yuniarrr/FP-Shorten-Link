@@ -22,13 +22,6 @@
       <Icon icon="mdi:link-variant" width="25"></Icon>
     </div>
     <div
-      @click="this.$router.push('/dashboard/settings')"
-      class="flex items-center justify-center w-10 h-10 p-1 mt-3 rounded-lg cursor-pointer bg-neutral-800 text-neutral-50 hover:text-green-400"
-      :class="$route.path == '/dashboard/settings' ? 'text-green-400' : ''"
-    >
-      <Icon icon="ep:setting" width="25"></Icon>
-    </div>
-    <div
       class="absolute flex items-center justify-center w-10 h-10 p-1 rounded-lg cursor-pointer bg-neutral-800 bottom-3 text-neutral-50 hover:text-green-400"
       @click="app.signOut()"
     >
