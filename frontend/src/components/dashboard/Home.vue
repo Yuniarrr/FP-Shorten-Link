@@ -272,8 +272,10 @@ export default {
     },
     getMail() {
       const parseCookie = this.app.parseJwt(document.cookie);
-      let email = parseCookie.email;
-      return email;
+      if(parseCookie) {
+        let email = parseCookie.email;
+        return email;
+      }
     },
   },
 };
