@@ -174,15 +174,17 @@
                 "
               >
                 {{
-                  ` s.it/${
-                    app.links.all_links.find((l) => l.id == link.id).path
-                      ? app.links.all_links.find((l) => l.id == link.id).path
-                      : ""
-                  }`
+                  shortMsg(
+                    ` s.it/${
+                      app.links.all_links.find((l) => l.id == link.id).path
+                        ? app.links.all_links.find((l) => l.id == link.id).path
+                        : ""
+                    }`
+                  )
                 }}
               </span>
             </p>
-            <Icon
+            <!-- <Icon
               v-if="view.copy == false"
               icon="carbon:copy"
               width="20"
@@ -195,7 +197,7 @@
               color="green"
               class="cursor-pointer lg:ml-2 md:ml-4 md:mt-2"
               width="33"
-            />
+            /> -->
           </div>
         </div>
       </div>
@@ -261,8 +263,12 @@ export default {
         return "Good Evening";
       }
     },
-    orderFromBigger() {
-      this.app.statistics.links.sort((a, b) => b.total - a.total);
+    shortMsg(msg) {
+      if (msg.length > 20) {
+        return msg.substring(0, 20) + "...";
+      } else {
+        return msg;
+      }
     },
   },
 };
