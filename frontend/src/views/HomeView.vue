@@ -11,8 +11,8 @@
               The Shortest Link Shortener
             </h1>
             <p class="mb-8 text-lg font-normal lg:text-xl dark:text-gray-400">
-              Make your long links into short just in one click, and share it
-              with your friends. It's that simple!
+              Make your long links into short just in one click, and share it with your
+              friends. It's that simple!
             </p>
             <div class="flex">
               <input
@@ -23,14 +23,11 @@
                 placeholder="Place your link here!"
               />
               <button
+                @click="this.$router.push('/login')"
                 type="submit"
                 class="bg-green-500 text-slate-50 p-3 font-bold rounded-r-lg"
               >
-                <Icon
-                  icon="majesticons:comet"
-                  width="30"
-                  class="text-white"
-                ></Icon>
+                <Icon icon="majesticons:comet" width="30" class="text-white"></Icon>
               </button>
             </div>
           </div>

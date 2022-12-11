@@ -3,7 +3,7 @@
     <h1 class="text-4xl font-bold text-neutral-50">Dashboard</h1>
 
     <div class="my-2">
-      <p class="text-lg font-light">{{ sayGretting() }}, Yuni</p>
+      <p class="text-lg font-light">{{ sayGretting() }}, {{ getMail() }}</p>
       <p class="font-light text-slate-400">
         Here's what's happening with your links today.
       </p>
@@ -269,6 +269,11 @@ export default {
       } else {
         return msg;
       }
+    },
+    getMail() {
+      const parseCookie = this.app.parseJwt(document.cookie);
+      let email = parseCookie.email;
+      return email;
     },
   },
 };

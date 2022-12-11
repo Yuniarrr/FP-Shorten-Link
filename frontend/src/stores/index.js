@@ -10,6 +10,7 @@ export const useApp = defineStore({
   state: () => ({
     user: {
       logged_in: false,
+      wrong_password: false,
     },
     token: null,
     refreshToken: null,
@@ -106,7 +107,6 @@ export const useApp = defineStore({
     async register(email, password, cpassword) {
       this.loading = true;
       this.error = null;
-      console.log("register");
       try {
         const { data } = await axios
           .post(URL_API + "api/register", {
@@ -115,11 +115,18 @@ export const useApp = defineStore({
             cpassword,
           })
           .then((res) => {
-            console.log(res);
+            console.log(`res: ${res}`);
+            this.user.wrong_password = false;
           })
           .catch((error) => {
             // Todo: Handle error
             console.log(error.response.data.message);
+            if(error.response.data.message == "Passwords don't match") {
+              this.user.wrong_password = true;
+              setTimeout(() => {
+                this.user.wrong_password = false;
+              }, 1000);
+            }
             if (
               error.response.data.message.code === "auth/email-already-in-use"
             ) {
@@ -133,7 +140,11 @@ export const useApp = defineStore({
         this.error = error;
       } finally {
         this.loading = false;
-        this.router.push("/login");
+        if (this.user.wrong_password == false) {
+          this.router.push("/login");
+        } else {
+          this.router.push("/register");
+        }
       }
     },
     async signOut() {

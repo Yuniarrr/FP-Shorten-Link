@@ -8,11 +8,7 @@
       >
         <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
           <RouterLink to="/" class="flex items-center justify-center">
-            <Icon
-              icon="majesticons:comet"
-              width="30"
-              class="mr-1 text-yellow-100"
-            ></Icon>
+            <Icon icon="majesticons:comet" width="30" class="mr-1 text-yellow-100"></Icon>
             <h1
               class="self-center text-xl font-black text-yellow-100 whitespace-nowrap dark:text-white"
             >
@@ -24,10 +20,14 @@
           >
             Create and account
           </h1>
+          <div
+            v-if="app.user.wrong_password == true"
+            class="text-center bg-orange-800 rounded-md py-1 font-semibold"
+          >
+            Passwords don't match
+          </div>
           <div>
-            <label
-              for="email"
-              class="block mb-2 text-sm font-medium dark:text-white"
+            <label for="email" class="block mb-2 text-sm font-medium dark:text-white"
               >Your email</label
             >
             <input
@@ -40,9 +40,7 @@
             />
           </div>
           <div>
-            <label
-              for="password"
-              class="block mb-2 text-sm font-medium dark:text-white"
+            <label for="password" class="block mb-2 text-sm font-medium dark:text-white"
               >Password</label
             >
             <input
@@ -135,7 +133,7 @@ export default {
   },
   beforeMount() {
     this.app.sessionCheck();
-    if(this.app.user.logged_in) {
+    if (this.app.user.logged_in) {
       this.$router.push("/dashboard");
     }
   },
@@ -146,7 +144,7 @@ export default {
           this.$router.push("/dashboard");
         }
       },
-    }
+    },
   },
 };
 </script>
