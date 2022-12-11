@@ -34,13 +34,15 @@
             class="my-2 text-3xl font-semibold hover:text-yellow-200 cursor-pointer hover:underline"
           >
             {{
-              `s.it/${
-                app.links.all_links.find((link) => link.id == this.$route.params.id) ===
-                undefined
-                  ? ""
-                  : app.links.all_links.find((link) => link.id == this.$route.params.id)
-                      .path
-              }`
+              shortMsg(
+                `s.it/${
+                  app.links.all_links.find((link) => link.id == this.$route.params.id) ===
+                  undefined
+                    ? ""
+                    : app.links.all_links.find((link) => link.id == this.$route.params.id)
+                        .path
+                }`
+              )
             }}
           </a>
         </div>
@@ -274,14 +276,11 @@ export default {
     Icon,
   },
   methods: {
-    sayGretting() {
-      const hour = dayjs().hour();
-      if (hour >= 0 && hour < 12) {
-        return "Good Morning";
-      } else if (hour >= 12 && hour < 18) {
-        return "Good Afternoon";
+    shortMsg(msg) {
+      if (msg.length > 15) {
+        return msg.substring(0, 15) + "...";
       } else {
-        return "Good Evening";
+        return msg;
       }
     },
   },

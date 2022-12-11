@@ -162,6 +162,8 @@ export const useApp = defineStore({
           .then((res) => {
             this.user.logged_in = false;
             this.router.push("/");
+            const store = useApp();
+            store.$reset();
           })
           .catch((err) => {
             console.log(err);

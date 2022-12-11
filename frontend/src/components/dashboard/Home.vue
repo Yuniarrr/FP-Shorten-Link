@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="w-full py-6 ml-24 mr-5 rounded-lg mb-9 my-7 bg-neutral-900 px-7 h-fit"
-  >
+  <div class="w-full py-6 ml-24 mr-5 rounded-lg mb-9 my-7 bg-neutral-900 px-7 h-fit">
     <h1 class="text-4xl font-bold text-neutral-50">Dashboard</h1>
 
     <div class="my-2">
@@ -96,15 +94,13 @@
           <p class="text-sm font-bold text-slate-400">MONTHLY VISITED</p>
           <Icon
             :icon="
-              app.statistics.total_monthly[11] >
-              app.statistics.total_monthly[10]
+              app.statistics.total_monthly[11] > app.statistics.total_monthly[10]
                 ? 'material-symbols:keyboard-double-arrow-up-rounded'
                 : 'material-symbols:keyboard-double-arrow-down-rounded'
             "
             width="23"
             :color="
-              app.statistics.total_monthly[11] >
-              app.statistics.total_monthly[10]
+              app.statistics.total_monthly[11] > app.statistics.total_monthly[10]
                 ? '#31c48d'
                 : '#ff4a37'
             "
@@ -113,7 +109,9 @@
         <div class="grid grid-cols-2">
           <div>
             <p class="my-2 text-4xl font-semibold">
-              {{ app.statistics.total_monthly[11] ? app.statistics.total_monthly[11] : 0 }}
+              {{
+                app.statistics.total_monthly[11] ? app.statistics.total_monthly[11] : 0
+              }}
             </p>
           </div>
           <Icon
@@ -129,9 +127,7 @@
     <div class="grid grid-cols-8 gap-3">
       <div class="col-span-3 bg-neutral-800 rounded-md">
         <div class="border-b-2 border-b-neutral-600">
-          <p class="text-lg my-2 ml-5 font-bold text-neutral-50">
-            Daily Visitor
-          </p>
+          <p class="text-lg my-2 ml-5 font-bold text-neutral-50">Daily Visitor</p>
         </div>
         <div class="w-full">
           <Line
@@ -142,9 +138,7 @@
       </div>
       <div class="col-span-3 bg-neutral-800 rounded-md">
         <div class="border-b-2 border-b-neutral-600">
-          <p class="text-lg my-2 ml-5 font-bold text-neutral-50">
-            Monthly Visitor
-          </p>
+          <p class="text-lg my-2 ml-5 font-bold text-neutral-50">Monthly Visitor</p>
         </div>
         <div class="w-full">
           <Line
@@ -155,13 +149,39 @@
       </div>
       <div class="col-span-2 bg-neutral-800 rounded-md">
         <div class="border-b-2 border-b-neutral-600">
-          <p class="text-lg my-2 ml-5 font-bold text-neutral-50">
-            Top Visited Links
-          </p>
+          <p class="text-lg my-2 ml-5 font-bold text-neutral-50">Top Visited Links</p>
         </div>
-        <div class="flex flex-col mx-5 my-3 gap-y-2">
+        <div
+          class="flex flex-col mx-5 my-3 gap-y-2"
+          v-for="(link, index) in app.statistics.links
+            .sort((a, b) => b.total - a.total)
+            .slice(0, 10)
+            ? app.statistics.links.sort((a, b) => b.total - a.total).slice(0, 10)
+            : []"
+          :key="index"
+        >
           <div class="flex lg:flex-row xl:flex-row md:flex-col">
-            <p class="font-light text-xl">1. s.it/B3uz4</p>
+            <p class="font-light text-xl">
+              {{ `${index + 1}.` }}
+              <span
+                class="cursor-pointer hover:text-yellow-200"
+                @click="
+                  app.visitUrl(
+                    app.links.all_links.find((l) => l.id == link.id).path
+                      ? app.links.all_links.find((l) => l.id == link.id).path
+                      : ''
+                  )
+                "
+              >
+                {{
+                  ` s.it/${
+                    app.links.all_links.find((l) => l.id == link.id).path
+                      ? app.links.all_links.find((l) => l.id == link.id).path
+                      : ""
+                  }`
+                }}
+              </span>
+            </p>
             <Icon
               v-if="view.copy == false"
               icon="carbon:copy"
@@ -240,6 +260,9 @@ export default {
       } else {
         return "Good Evening";
       }
+    },
+    orderFromBigger() {
+      this.app.statistics.links.sort((a, b) => b.total - a.total);
     },
   },
 };
